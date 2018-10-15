@@ -3,6 +3,11 @@ import android.os.Bundle;
 
 import eu.kudan.kudan.ARAPIKey;
 import eu.kudan.kudan.ARActivity;
+import eu.kudan.kudan.ARImageNode;
+import eu.kudan.kudan.ARImageTrackable;
+import eu.kudan.kudan.ARImageTracker;
+import eu.kudan.kudan.ARModelImporter;
+import eu.kudan.kudan.ARModelNode;
 
 public class MainActivity extends ARActivity {
 
@@ -23,6 +28,23 @@ public class MainActivity extends ARActivity {
     {
         super.setup();
 
-        // AR Content to be set up here
+        // Initialise image trackable
+        ARImageTrackable qrMarker = new ARImageTrackable("QR Marker");
+        qrMarker.loadFromAsset("QRMarker.png");
+        qrMarker.addListener(new QRMarkerListener("QR Marker"));
+
+//        ARModelImporter arModelImporter = new ARModelImporter();
+//
+//        arModelImporter.loadFromPath("/app/assets/ARBuilding.armodel");
+//        ARModelNode arBuilding = arModelImporter.getNode();
+
+        ARImageNode danberuNode = new ARImageNode("danberu.png");
+
+        ARImageTracker imageTracker = ARImageTracker.getInstance();
+        imageTracker.initialise();
+
+        imageTracker.addTrackable(qrMarker);
+
+        qrMarker.getWorld().addChild(danberuNode);
     }
 }
