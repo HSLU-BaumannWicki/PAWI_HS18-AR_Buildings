@@ -1,10 +1,17 @@
 package eu.kudan.ar;
 import android.os.Bundle;
+import android.util.Log;
+
+import com.jme3.math.Matrix4f;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 
 import eu.kudan.kudan.ARAPIKey;
 import eu.kudan.kudan.ARActivity;
-import eu.kudan.kudan.ARImageNode;
+import eu.kudan.kudan.ARArbiTrack;
+import eu.kudan.kudan.ARArbiTrackListener;
 import eu.kudan.kudan.ARImageTrackable;
+import eu.kudan.kudan.ARImageTrackableListener;
 import eu.kudan.kudan.ARImageTracker;
 import eu.kudan.kudan.ARLightMaterial;
 import eu.kudan.kudan.ARMeshNode;
@@ -12,7 +19,12 @@ import eu.kudan.kudan.ARModelImporter;
 import eu.kudan.kudan.ARModelNode;
 import eu.kudan.kudan.ARTexture2D;
 
-public class MainActivity extends ARActivity {
+public class MainActivity extends ARActivity implements ARArbiTrackListener, ARImageTrackableListener {
+
+    // Check if this run is the first ArbiTrackStarted run
+    private boolean firstRun = false;
+    private ARModelNode arBuilding;
+    private ARImageTrackable qrMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +44,18 @@ public class MainActivity extends ARActivity {
         super.setup();
 
         // Initialise image trackable
-        ARImageTrackable qrMarker = new ARImageTrackable("QR Marker");
+        qrMarker = new ARImageTrackable("QR Marker");
         qrMarker.loadFromAsset("QRMarker.png");
         qrMarker.addListener(new QRMarkerListener("QR Marker"));
+        qrMarker.addListener(this);
+        qrMarker.setName("QRMarker_Building");
 
         ARModelImporter arModelImporter = new ARModelImporter();
 
         // Load the building model
         arModelImporter.loadFromAsset("ARBuilding.armodel");
-        ARModelNode arBuilding = arModelImporter.getNode();
+        arBuilding = arModelImporter.getNode();
+        arBuilding.setName("AR_Building_Model");
 
         // Add Texture to the model
         ARTexture2D concreteTexture = new ARTexture2D();
@@ -63,7 +78,83 @@ public class MainActivity extends ARActivity {
         qrMarker.getWorld().addChild(arBuilding);
 
         // Scale and rotate the model
-        arBuilding.scaleByUniform(4f);
+        arBuilding.scaleByUniform(8f);
         arBuilding.rotateByDegrees(90f, 1,0,0);
+
+        // Initialise ArbiTrack
+        ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
+        arbiTrack.initialise();
+
+        //Add the activity as an ArbiTrack delegate
+        arbiTrack.addListener(this);
+
+        // Use the image trackable's world as the target node.
+        // This causes ArbiTrack to start tracking at the trackable's position.
+        arbiTrack.setTargetNode(qrMarker.getWorld());
+    }
+
+    @Override
+    public void arbiTrackStarted() {
+        Log.d("AR", "ArbiTrack started");
+                if(firstRun) {
+                    Log.i("AR", "Entered firstRun Setup");
+
+                    ARArbiTrack arArbiTrack = ARArbiTrack.getInstance();
+
+                    //Initialise an ARImageNode, find marker node,  and attach to ARArbitrack
+                    ARModelNode localBuilding = arBuilding;
+                    arArbiTrack.getWorld().addChild(localBuilding);
+
+                    localBuilding.remove();
+
+                    // Add the image node as a child of the trackable's world
+                    qrMarker.getWorld().addChild(localBuilding);
+                    firstRun = false;
+                }
+
+                if(qrMarker.getDetected()) {
+
+                    // Get arbi track instance
+                    ARArbiTrack arArbiTrack = ARArbiTrack.getInstance();
+
+                    //Get the markerless space to trackable space
+                    Matrix4f transform = arArbiTrack.getWorld().getFullTransform().invert().mult(qrMarker.getWorld().getFullTransform());
+
+                    //Get the rotation out of the full transform
+                    Quaternion orInArbiTrack = new Quaternion().fromRotationMatrix(transform.toRotationMatrix());
+
+                    //Get the position out of the full transform
+                    Vector3f posInArbiTrack = transform.mult(new Vector3f());
+
+                    // Add the image node as a child of arbi track
+                    arArbiTrack.getWorld().addChild(arBuilding);
+
+                    // Change image nodes position to be relative to the marker nodes world
+                    arBuilding.setPosition(posInArbiTrack);
+
+                    // Change image nodes orientation to be relative to the marker nodes world
+                    arBuilding.setOrientation(orInArbiTrack);
+                }
+
+            }
+
+    @Override
+    public void didDetect(ARImageTrackable arImageTrackable) {
+        ARArbiTrack arArbiTrack = ARArbiTrack.getInstance();
+        if (arArbiTrack.getIsInitialised()) {
+            Log.i("AR", "Changed to ArbiTrack");
+            firstRun = true;
+            arArbiTrack.start();
+        }
+    }
+
+    @Override
+    public void didTrack(ARImageTrackable arImageTrackable) {
+
+    }
+
+    @Override
+    public void didLose(ARImageTrackable arImageTrackable) {
+
     }
 }
