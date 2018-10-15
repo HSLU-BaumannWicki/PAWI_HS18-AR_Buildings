@@ -6,8 +6,11 @@ import eu.kudan.kudan.ARActivity;
 import eu.kudan.kudan.ARImageNode;
 import eu.kudan.kudan.ARImageTrackable;
 import eu.kudan.kudan.ARImageTracker;
+import eu.kudan.kudan.ARLightMaterial;
+import eu.kudan.kudan.ARMeshNode;
 import eu.kudan.kudan.ARModelImporter;
 import eu.kudan.kudan.ARModelNode;
+import eu.kudan.kudan.ARTexture2D;
 
 public class MainActivity extends ARActivity {
 
@@ -33,18 +36,34 @@ public class MainActivity extends ARActivity {
         qrMarker.loadFromAsset("QRMarker.png");
         qrMarker.addListener(new QRMarkerListener("QR Marker"));
 
-//        ARModelImporter arModelImporter = new ARModelImporter();
-//
-//        arModelImporter.loadFromPath("/app/assets/ARBuilding.armodel");
-//        ARModelNode arBuilding = arModelImporter.getNode();
+        ARModelImporter arModelImporter = new ARModelImporter();
 
-        ARImageNode danberuNode = new ARImageNode("danberu.png");
+        // Load the building model
+        arModelImporter.loadFromAsset("ARBuilding.armodel");
+        ARModelNode arBuilding = arModelImporter.getNode();
+
+        // Add Texture to the model
+        ARTexture2D concreteTexture = new ARTexture2D();
+        concreteTexture.loadFromAsset("concrete.jpg");
+
+        // Add ambient lighting
+        ARLightMaterial concreteMaterial = new ARLightMaterial();
+        concreteMaterial.setTexture(concreteTexture);
+        concreteMaterial.setAmbient(0.8f, 0.8f, 0.8f);
+
+        for (ARMeshNode meshNode : arModelImporter.getMeshNodes()) {
+            meshNode.setMaterial(concreteMaterial);
+        }
 
         ARImageTracker imageTracker = ARImageTracker.getInstance();
         imageTracker.initialise();
 
         imageTracker.addTrackable(qrMarker);
 
-        qrMarker.getWorld().addChild(danberuNode);
+        qrMarker.getWorld().addChild(arBuilding);
+
+        // Scale and rotate the model
+        arBuilding.scaleByUniform(4f);
+        arBuilding.rotateByDegrees(90f, 1,0,0);
     }
 }
