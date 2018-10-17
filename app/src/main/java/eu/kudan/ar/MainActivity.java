@@ -3,10 +3,7 @@ package eu.kudan.ar;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
@@ -16,18 +13,22 @@ import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARArbiTrackListener;
 import eu.kudan.kudan.ARGyroPlaceManager;
 import eu.kudan.kudan.ARImageTrackable;
+import eu.kudan.kudan.ARImageTrackableListener;
 import eu.kudan.kudan.ARImageTracker;
 import eu.kudan.kudan.ARLightMaterial;
 import eu.kudan.kudan.ARMeshNode;
 import eu.kudan.kudan.ARModelImporter;
 import eu.kudan.kudan.ARModelNode;
 import eu.kudan.kudan.ARNode;
+import eu.kudan.kudan.ARRenderer;
+import eu.kudan.kudan.ARRendererListener;
 import eu.kudan.kudan.ARTexture2D;
 
-public class MainActivity extends ARActivity implements ARArbiTrackListener, GestureDetector.OnGestureListener {
+public class MainActivity extends ARActivity implements ARArbiTrackListener, ARImageTrackableListener, ARRendererListener {
     private ARModelNode arBuilding;
     private ARImageTrackable qrMarker;
-    private GestureDetectorCompat gestureDetect;
+    private boolean startArbitrack = false;
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class MainActivity extends ARActivity implements ARArbiTrackListener, Ges
         qrMarker = new ARImageTrackable("QR Marker");
         qrMarker.loadFromAsset("QRMarker.png");
         qrMarker.addListener(new QRMarkerListener("QR Marker"));
+        qrMarker.addListener(this);
         qrMarker.setName("QRMarker_Building");
 
         arBuilding = createModelNode("ARBuilding.armodel", "AR_Building_Model");
@@ -61,9 +63,8 @@ public class MainActivity extends ARActivity implements ARArbiTrackListener, Ges
         imageTracker.initialise();
         imageTracker.addTrackable(qrMarker);
 
-        setUpArbiTrack(arBuilding, arBuilding);
-
-        gestureDetect = new GestureDetectorCompat(this,this);
+        setUpArbiTrack(qrMarker.getWorld(), arBuilding);
+        ARRenderer.getInstance().addListener(this);
     }
 
     private void setUpArbiTrack(ARNode targetNode, ARNode childNode)
@@ -75,9 +76,6 @@ public class MainActivity extends ARActivity implements ARArbiTrackListener, Ges
         ARGyroPlaceManager gyroPlaceManager = ARGyroPlaceManager.getInstance();
         gyroPlaceManager.initialise();
 
-        gyroPlaceManager.getWorld().addChild(targetNode);
-
-        arbiTrack.getWorld().setParent(ARImageTracker.getInstance().getBaseNode());
         arbiTrack.setTargetNode(targetNode);
 
         // Add the tracking image node to the arbitrack world
@@ -115,88 +113,84 @@ public class MainActivity extends ARActivity implements ARArbiTrackListener, Ges
 
     @Override
     public void arbiTrackStarted() {
-        ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
-        ARImageTracker imageTracker = ARImageTracker.getInstance();
-        ARGyroPlaceManager arGyroPlaceManager = ARGyroPlaceManager.getInstance();
+        if (startArbitrack) {
+            // Get ArbiTrack instance
+            ARArbiTrack arArbiTrack = ARArbiTrack.getInstance();
 
-        Vector3f imageTrackerWorldPosition = imageTracker.getBaseNode().getWorldPosition();
-        Quaternion imageTrackerWorldOrientation = imageTracker.getBaseNode().getWorldOrientation();
+            // Get model nodes position relative to camera
+            Vector3f fullPos = arArbiTrack.getTargetNode().getFullTransform().mult(Vector3f.ZERO);
 
-        Log.i("AR", "imageTracker - WorldPosition: " + imageTrackerWorldPosition.toString());
-        Log.i("AR", "imageTracker - WorldOrientation: " + imageTrackerWorldOrientation.toString());
+            // Create empty target Node
+            ARNode targetNode = new ARNode();
+            targetNode.setPosition(fullPos);
+            arArbiTrack.setTargetNode(targetNode);
 
-        Quaternion targetOrientation = qrMarker.getWorld().getOrientation();
-        Vector3f targetPosition = qrMarker.getWorld().getPosition();
+            // Get models position relative to ArbiTracks world.
+            Vector3f posInArbiTrack = arArbiTrack.getWorld().getFullTransform().invert().mult(fullPos);
 
-        Log.i("AR", "QR Marker - Position" + targetPosition.toString());
-        Log.i("AR", "QR Marker - Orientation" + targetOrientation.toString());
+            // Get models orientation relative to ArbiTracks world.
+            Quaternion orInArbiTrack = arArbiTrack.getWorld().getFullOrientation().inverse().mult((arBuilding.getFullOrientation()));
 
-        Log.i("AR", "ArbiTrack - Position" + arbiTrack.getWorld().getPosition().toString());
-        Log.i("AR", "ArbiTrack - Orientation" + arbiTrack.getWorld().getOrientation().toString());
+            // Change model nodes position to be relative to the marker nodes world
+            arBuilding.setPosition(posInArbiTrack);
 
-        arbiTrack.getWorld().setOrientation(imageTrackerWorldOrientation);
-        arbiTrack.getWorld().setPosition(imageTrackerWorldPosition);
-        arbiTrack.getTargetNode().
+            // Change model nodes orientation to be relative to the marker nodes world
+            arBuilding.setOrientation(orInArbiTrack);
 
-        Log.i("AR", "GyroManager - Position" + arGyroPlaceManager.getWorld().getPosition().toString());
-        Log.i("AR", "GyroManager - Orientation" + arGyroPlaceManager.getWorld().getOrientation().toString());
-
-        arGyroPlaceManager.getWorld().setOrientation(imageTrackerWorldOrientation);
-        arGyroPlaceManager.getWorld().setPosition(imageTrackerWorldPosition);
-
-        SensorManager sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        boolean gyroStatus = sensorManager.getSensorList(Sensor.TYPE_GYROSCOPE).size() > 0;
-        Log.i("System", "Gyroscope available: " + gyroStatus);
-
-        ARNode trackingNode = arbiTrack.getWorld().getChildren().get(0);
-        trackingNode.setOrientation(targetOrientation);
-        trackingNode.setPosition(targetPosition);
-        trackingNode.setVisible(true);
+            arBuilding.setVisible(true);
+        }
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-        gestureDetect.onTouchEvent(event);
-        return super.onTouchEvent(event);
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e)
-    {
+    public void didDetect(ARImageTrackable arImageTrackable) {
         ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
 
-        arbiTrack.start();
-
-        return false;
-    }
-
-    // We also need to implement the other overrides of the GestureDetector, though we don't need them for this sample.
-    @Override
-    public boolean onDown(MotionEvent e)
-    {
-        return false;
+        if (arImageTrackable.getName().equals("QRMarker_Building") && arbiTrack.getIsInitialised()) {
+            Log.i("AR", "Found Marker and starting ArbiTrack");
+            startArbitrack = true;
+            arbiTrack.start();
+        }
     }
 
     @Override
-    public void onShowPress(MotionEvent e)
-    {
+    public void didTrack(ARImageTrackable arImageTrackable) {
+
     }
 
     @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY)
-    {
-        return false;
+    public void didLose(ARImageTrackable arImageTrackable) {
+
+    }
+
+
+    @Override
+    public void preRender() {
+
     }
 
     @Override
-    public void onLongPress(MotionEvent e)
-    {
+    public void postRender() {
+        if (startArbitrack) {
+            if (counter >= 20) {
+                ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
+                Log.i("AR", "ArbiTrack - Position" + arbiTrack.getWorld().getPosition().toString());
+                Log.i("AR", "ArbiTrack - Orientation" + arbiTrack.getWorld().getOrientation().toString());
+
+                Log.i("AR", "ARBuilding - Position" + arBuilding.getWorld().getPosition().toString());
+                Log.i("AR", "ARBuilding - Orientation" + arBuilding.getWorld().getOrientation().toString());
+                counter = 0;
+            }
+            counter++;
+        }
     }
 
     @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
-    {
-        return false;
+    public void rendererDidPause() {
+
+    }
+
+    @Override
+    public void rendererDidResume() {
+
     }
 }

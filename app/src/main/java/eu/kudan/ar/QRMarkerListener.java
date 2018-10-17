@@ -7,6 +7,7 @@ import eu.kudan.kudan.ARImageTrackableListener;
 
 public class QRMarkerListener implements ARImageTrackableListener {
     private String markerName;
+    private boolean alreadyTracked = false;
 
     public QRMarkerListener(String markerName) {
         if (markerName != null) {
@@ -24,11 +25,15 @@ public class QRMarkerListener implements ARImageTrackableListener {
 
     @Override
     public void didTrack(ARImageTrackable arImageTrackable) {
-        Log.i("AR", "Tracked image trackable on marker: " + markerName);
+        if (!alreadyTracked) {
+            Log.i("AR", "Tracked image trackable on marker: " + markerName);
+            alreadyTracked = true;
+        }
     }
 
     @Override
     public void didLose(ARImageTrackable arImageTrackable) {
         Log.i("AR", "Lost image trackable on marker: " + markerName);
+        alreadyTracked = false;
     }
 }
