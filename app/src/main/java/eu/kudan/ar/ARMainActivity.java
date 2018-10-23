@@ -1,17 +1,24 @@
 package eu.kudan.ar;
 import android.os.Bundle;
 
-import eu.kudan.kudan.ARAPIKey;
-import eu.kudan.kudan.ARActivity;
+import com.jme3.math.Vector3f;
 
-public class MainActivity extends ARActivity {
+import eu.kudan.kudan.ARAPIKey;
+import eu.kudan.kudan.ARArbiTrack;
+import eu.kudan.kudan.ARGyroManager;
+import eu.kudan.kudan.ARLightMaterial;
+import eu.kudan.kudan.ARMeshNode;
+import eu.kudan.kudan.ARModelImporter;
+import eu.kudan.kudan.ARModelNode;
+
+public class ARMainActivity extends eu.kudan.kudan.ARActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Comment this out for the time being unless you plan to create UI elements
-        //setContentView(R.layout.activity_main);
+        setContentView(R.layout.ar_main_activity);
 
         ARAPIKey key = ARAPIKey.getInstance();
         // TODO: Using the development key, change in the future?
@@ -22,6 +29,30 @@ public class MainActivity extends ARActivity {
     public void setup()
     {
         super.setup();
+        // Initialise ArbiTrack.
+        ARArbiTrack arbiTrack = ARArbiTrack.getInstance();
+        arbiTrack.initialise();
+
+        ARGyroManager theOneGyroManager = ARGyroManager.getInstance();
+        theOneGyroManager.initialise();
+
+        ARModelImporter importer = new ARModelImporter();
+        importer.loadFromAsset("ARBuilding.armodel");
+        ARModelNode myModel = importer.getNode();
+
+
+
+        ARLightMaterial concreteMaterial = new ARLightMaterial();
+        concreteMaterial.setAmbient(1f, 1f, 1f);
+
+        for(ARMeshNode meshNode : myModel.getMeshNodes()) {
+            meshNode.setMaterial(concreteMaterial);
+        }
+
+        theOneGyroManager.getWorld().addChild(myModel);
+        theOneGyroManager.start();
+        myModel.setPosition(new Vector3f(-10,-20,0));
+        myModel.scaleByUniform(1f);
 
         // AR Content to be set up here
     }

@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">AR_Buildings</string>
+    <string name="app_name">AR_Buildings2</string>
+    <string name="title_activity_android_permission_check">AndroidPermissionCheck</string>
+    <string name="location_permission_check">Location Permission Granted?</string>
+    <string name="camera_permission_check">Camera Permission Granted?</string>
+    <string name="storage_permission_check">Storage Permission Granted?</string>
+    <string name="information_title_about_permission">Storage Permission Granted?</string>
+    <string name="title_activity_main_activitytest">MainActivitytest</string>
 </resources>
