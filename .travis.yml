@@ -3,7 +3,7 @@ before_script:
         - chmod +x gradlew
 android:
         components:
-                - build-tools-3.2.1
+                - build-tools-28.0.3
                 - android-27
                 - extra-google-google_play_services
                 - extra-google-m2repository
