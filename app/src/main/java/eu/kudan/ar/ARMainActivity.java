@@ -1,9 +1,19 @@
 package eu.kudan.ar;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.CheckBox;
 
 import com.jme3.math.Vector3f;
 
 import eu.kudan.kudan.ARAPIKey;
+import eu.kudan.kudan.ARActivity;
 import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroManager;
 import eu.kudan.kudan.ARLightMaterial;
@@ -11,14 +21,13 @@ import eu.kudan.kudan.ARMeshNode;
 import eu.kudan.kudan.ARModelImporter;
 import eu.kudan.kudan.ARModelNode;
 
-public class ARMainActivity extends eu.kudan.kudan.ARActivity {
-
+public class ARMainActivity extends ARActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Comment this out for the time being unless you plan to create UI elements
-        setContentView(R.layout.ar_main_activity);
+        //setContentView(R.layout.ar_main_activity);
 
         ARAPIKey key = ARAPIKey.getInstance();
         // TODO: Using the development key, change in the future?
@@ -56,4 +65,13 @@ public class ARMainActivity extends eu.kudan.kudan.ARActivity {
 
         // AR Content to be set up here
     }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+    }
+
+
+
 }
+
