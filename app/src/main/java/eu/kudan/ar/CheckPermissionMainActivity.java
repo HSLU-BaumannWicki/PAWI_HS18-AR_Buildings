@@ -27,7 +27,7 @@ public class CheckPermissionMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_permission_and_show_error);
-        myPermissionsList = new HashMap<String, Integer>();
+        myPermissionsList = new HashMap<>();
     }
 
     @Override
