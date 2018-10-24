@@ -14,11 +14,18 @@ public class OnLocationChangeListener implements LocationStorageListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        if (location.getAccuracy() <= 10) {
+        if (location.getAccuracy() <= 25) {
             this.lastLocation = location;
             locationfound.locationUpdate(this.lastLocation);
         }
         Log.i("DEBUG", location.toString());
+        MyLocation l = new MyLocation(location);
+        l.setAltitude(500);
+        if(this.lastLocation != null){
+            Log.i("Longitude", l.longitudeDistanceInMetersTo(this.lastLocation)+"");
+            Log.i("Latitude", l.latitudeDistanceInMetersTo(this.lastLocation)+"");
+        }
+
     }
 
     @Override

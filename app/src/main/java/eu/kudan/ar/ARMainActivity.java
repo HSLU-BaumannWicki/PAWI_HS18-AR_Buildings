@@ -11,17 +11,26 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
+
+import java.util.List;
 
 import eu.kudan.ar.dto.Building;
 import eu.kudan.ar.dto.ExampleBuildingImpl;
 import eu.kudan.ar.location.LocationFound;
 import eu.kudan.ar.location.LocationStorageListener;
+import eu.kudan.ar.location.MyLocation;
 import eu.kudan.ar.location.OnLocationChangeListener;
 import eu.kudan.kudan.ARAPIKey;
 import eu.kudan.kudan.ARActivity;
 import eu.kudan.kudan.ARArbiTrack;
 import eu.kudan.kudan.ARGyroManager;
 import eu.kudan.kudan.ARModelNode;
+import eu.kudan.kudan.ARNode;
 
 public class ARMainActivity extends ARActivity implements LocationFound, SensorEventListener {
     private LocationStorageListener myLocationListener;
@@ -35,6 +44,8 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
     private float[] mLastAccelerometer = new float[3];
     private float[] mLastMagnetometer = new float[3];
     private double degree;
+    private float rotatedAngle=0;
+    private float deltaAngle = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +116,28 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
     @Override
     public void locationUpdate(Location location) {
         ARModelNode myModel = building.getKudanModelNode();
-        myModel.setPosition(0,-10, -1 * location.distanceTo(building.getBuildingLocation()));
-        Log.i("Debug", "Distance To: " + location.distanceTo(building.getBuildingLocation()));
+        Vector3f myVector = MyLocation.getDistancesBetween(location, building.getBuildingLocation());
+        Vector2f myAngleVector = new Vector2f(myVector.getX(), myVector.getZ());
+        Vector2f referenceVector = new Vector2f(1, 0);
+
+        float angle = referenceVector.angleBetween(myAngleVector);
+        float deltaAngle = angle - this.rotatedAngle;
+        Log.e("Whaat!!", deltaAngle + "");
+        if (-0.2 < deltaAngle && deltaAngle < 0.2 ){
+            this.deltaAngle += deltaAngle;
+        }else{
+            building.getKudanModelNode().rotateByRadians(this.deltaAngle, 0,1,0);
+            this.deltaAngle = 0;
+        }
+        this.rotatedAngle = angle;
+
+        myModel.setPosition(MyLocation.getDistancesBetween(location, building.getBuildingLocation()));
+        Log.i("AngleBetweenVectors", ""+this.degree);
+        Log.i("AngleBetweenVectors", myAngleVector + "   " + referenceVector);
         // Rotation matrix based on current readings from accelerometer and magnetometer.
+
+        List<ARNode> myNodes = this.gyroManager.getWorld().getChildren();
+        this.gyroManager.getWorld().rotateByDegrees((float) this.degree, 0,1,0);
     }
 
     @Override
@@ -131,6 +161,12 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    public void onButtonClicked(View element){
+    }
+
+    private void rotateOverZAxis(Vector3f vectorToRotate, float radian){
     }
 }
 
