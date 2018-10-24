@@ -11,8 +11,8 @@ public class ExampleBuildingImpl implements Building {
     private ARModelNode myModel;
     private Location location;
     public static final double ALTITUDE = -1.619869351387024;
-    public static final double LATITUDE = 47.143457499999999;
-    public static final double LONGITUDE = 8.433371093750011;
+    public static final double LATITUDE = 47.143359;
+    public static final double LONGITUDE = 8.432946;
 
     public ExampleBuildingImpl(){
         location = new Location("");
