@@ -28,9 +28,12 @@ import eu.kudan.ar.location.OnLocationChangeListener;
 import eu.kudan.kudan.ARAPIKey;
 import eu.kudan.kudan.ARActivity;
 import eu.kudan.kudan.ARArbiTrack;
+import eu.kudan.kudan.ARCamera;
 import eu.kudan.kudan.ARGyroManager;
 import eu.kudan.kudan.ARModelNode;
 import eu.kudan.kudan.ARNode;
+import eu.kudan.kudan.ARRenderer;
+import eu.kudan.kudan.ARWorld;
 
 public class ARMainActivity extends ARActivity implements LocationFound, SensorEventListener {
     private LocationStorageListener myLocationListener;
@@ -46,6 +49,8 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
     private double degree;
     private float rotatedAngle=0;
     private float deltaAngle = 0;
+
+    private int state = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +127,7 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
 
         float angle = referenceVector.angleBetween(myAngleVector);
         float deltaAngle = angle - this.rotatedAngle;
-        Log.e("Whaat!!", deltaAngle + "");
+
         if (-0.2 < deltaAngle && deltaAngle < 0.2 ){
             this.deltaAngle += deltaAngle;
         }else{
@@ -131,30 +136,32 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
         }
         this.rotatedAngle = angle;
 
+        Log.i("DistanceVector", MyLocation.getDistancesBetween(location, building.getBuildingLocation()).toString());
         myModel.setPosition(MyLocation.getDistancesBetween(location, building.getBuildingLocation()));
-        Log.i("AngleBetweenVectors", ""+this.degree);
-        Log.i("AngleBetweenVectors", myAngleVector + "   " + referenceVector);
-        // Rotation matrix based on current readings from accelerometer and magnetometer.
 
-        List<ARNode> myNodes = this.gyroManager.getWorld().getChildren();
-        this.gyroManager.getWorld().rotateByDegrees((float) this.degree, 0,1,0);
+        //List<ARNode> myNodes = this.gyroManager.getWorld().getChildren();
+        //this.gyroManager.getWorld().rotateByDegrees((float) this.degree, 0,1,0);
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor == mMagneticSensor){
+            this.state |= 0b10;
             System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
             mSensorManager.unregisterListener(this, mMagneticSensor);
         }else if(event.sensor == mAccelerometer){
+            this.state |= 0b1;
             System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
             mSensorManager.unregisterListener(this, mAccelerometer);
-
         }
         float[] mR = new float[9];
         float[] orientationAngles = new float[3];
         SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
         SensorManager.getOrientation(mR, orientationAngles);
         this.degree = Math.toDegrees(orientationAngles[0]);
+        if(this.state == 3){
+            Log.e("OMG", ARRenderer.getInstance().getWorldCameraPosition().toString());
+        }
 
     }
 
@@ -164,6 +171,7 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
     }
 
     public void onButtonClicked(View element){
+        Log.i("String", "String2");
     }
 
     private void rotateOverZAxis(Vector3f vectorToRotate, float radian){
