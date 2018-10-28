@@ -10,8 +10,8 @@ import eu.kudan.kudan.ARModelNode;
 public class ExampleBuildingImpl implements Building {
     private ARModelNode myModel;
     private Location location;
-    public static final double ALTITUDE = -1.619869351387024;
-    public static final double LATITUDE = 47.143359;
+    public static final double ALTITUDE = 450;
+    public static final double LATITUDE = 47.143353;
     public static final double LONGITUDE = 8.432946;
 
     public ExampleBuildingImpl(){
@@ -21,10 +21,11 @@ public class ExampleBuildingImpl implements Building {
         location.setLongitude(LONGITUDE);
         location.setLatitude(LATITUDE);
 
-
         ARModelImporter importer = new ARModelImporter();
         importer.loadFromAsset("ARBuilding.armodel");
         myModel = importer.getNode();
+        myModel.rotateByDegrees(-60, 0,1,0 );
+        myModel.scaleByUniform(1f);
 
 
 

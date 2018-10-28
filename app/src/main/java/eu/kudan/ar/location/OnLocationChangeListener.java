@@ -19,12 +19,7 @@ public class OnLocationChangeListener implements LocationStorageListener {
             locationfound.locationUpdate(this.lastLocation);
         }
         Log.i("DEBUG", location.toString());
-        MyLocation l = new MyLocation(location);
-        l.setAltitude(500);
-        if(this.lastLocation != null){
-            Log.i("Longitude", l.longitudeDistanceInMetersTo(this.lastLocation)+"");
-            Log.i("Latitude", l.latitudeDistanceInMetersTo(this.lastLocation)+"");
-        }
+
 
     }
 
