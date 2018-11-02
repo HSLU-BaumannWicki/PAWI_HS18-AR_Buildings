@@ -4,6 +4,7 @@ import android.content.Context;
 import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.annotation.NonNull;
 
 import com.jme3.math.Vector3f;
 
@@ -11,8 +12,8 @@ import commonlib.location.LocationDistanceCalculator;
 import commonlib.model.BuildingModelSampleImpl;
 import commonlib.model.texture.Texturizer;
 import commonlib.model.texture.TexturizerModelBlack;
-import commonlib.rotation.Rotator;
-import commonlib.rotation.VectorRotator;
+import commonlib.location.rotation.Rotator;
+import commonlib.location.rotation.VectorRotator;
 import commonlib.storage.FloatMeanRingBuffer;
 import commonlib.storage.LocationMeanRingbufferImp;
 import commonlib.storage.RingBufferImpl;
@@ -27,6 +28,8 @@ import eu.kudan.kudan.ARModelImporter;
 import eu.kudan.kudan.ARModelNode;
 
 public class ProjectInitializer {
+
+    @NonNull
     public static ARBuildingsPositioner initGPSSingleBuildingSolution(Context context){
         KudanDevAPIKey();
 
