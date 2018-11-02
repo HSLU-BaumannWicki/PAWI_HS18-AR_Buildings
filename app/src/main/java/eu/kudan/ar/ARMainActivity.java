@@ -12,13 +12,13 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.SeekBar;
 
-import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
-import java.util.List;
-
+import eu.kudan.ar.ar.position.GPSBuildingPositioner;
+import eu.kudan.ar.di.ProjectInitializer;
 import eu.kudan.ar.dto.Building;
 import eu.kudan.ar.dto.ExampleBuildingImpl;
 import eu.kudan.ar.location.LocationFound;
@@ -28,12 +28,8 @@ import eu.kudan.ar.location.OnLocationChangeListener;
 import eu.kudan.kudan.ARAPIKey;
 import eu.kudan.kudan.ARActivity;
 import eu.kudan.kudan.ARArbiTrack;
-import eu.kudan.kudan.ARCamera;
 import eu.kudan.kudan.ARGyroManager;
 import eu.kudan.kudan.ARModelNode;
-import eu.kudan.kudan.ARNode;
-import eu.kudan.kudan.ARRenderer;
-import eu.kudan.kudan.ARWorld;
 
 public class ARMainActivity extends ARActivity implements LocationFound, SensorEventListener {
     private LocationStorageListener myLocationListener;
@@ -51,12 +47,14 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
     private float deltaAngle = 0;
 
     private int state = 0;
+    private GPSBuildingPositioner buildingPositioner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         building = new ExampleBuildingImpl();
+        building.getKudanModelNode().setVisible(false);
 
         // Comment this out for the time being unless you plan to create UI elements
         setContentView(R.layout.ar_main_activity);
@@ -74,6 +72,7 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
         mSensorManager.registerListener(this, mMagneticSensor, SensorManager.SENSOR_DELAY_GAME);
         mAccelerometer  = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        buildingPositioner = ProjectInitializer.initGPSSolution(this);
     }
 
     @Override
@@ -102,6 +101,7 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
     @Override
     public void onPause(){
         super.onPause();
+        this.buildingPositioner.stopPositioning();
         this.locationManager.removeUpdates(this.myLocationListener);
     }
 
@@ -109,6 +109,7 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
     @Override
     public void onResume(){
         super.onResume();
+        this.buildingPositioner.startPositioning();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ((LocationListener) this.myLocationListener));
     }
 
@@ -136,7 +137,7 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
         }
         this.rotatedAngle = angle;
 
-        Log.i("DistanceVector", MyLocation.getDistancesBetween(location, building.getBuildingLocation()).toString());
+        //Log.i("DistanceVector", MyLocation.getDistancesBetween(location, building.getBuildingLocation()).toString());
         myModel.setPosition(MyLocation.getDistancesBetween(location, building.getBuildingLocation()));
 
         //List<ARNode> myNodes = this.gyroManager.getWorld().getChildren();
@@ -160,7 +161,7 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
         SensorManager.getOrientation(mR, orientationAngles);
         this.degree = Math.toDegrees(orientationAngles[0]);
         if(this.state == 3){
-            Log.e("OMG", ARRenderer.getInstance().getWorldCameraPosition().toString());
+            //Log.e("OMG", ARRenderer.getInstance().getWorldCameraPosition().toString());
         }
 
     }
@@ -172,6 +173,17 @@ public class ARMainActivity extends ARActivity implements LocationFound, SensorE
 
     public void onButtonClicked(View element){
         Log.i("String", "String2");
+    }
+
+    public void onButtonRightClicked(View element){
+        SeekBar mySlider = findViewById(R.id.seekBar2);
+        float value = 1/mySlider.getProgress();
+        this.buildingPositioner.buildingModel.rotateModelByDegOverY(-value);
+    }
+    public void onButtonLeftClicked(View element){
+        SeekBar mySlider = findViewById(R.id.seekBar2);
+        float value = 1/mySlider.getProgress();
+        this.buildingPositioner.buildingModel.rotateModelByDegOverY(value);
     }
 
     private void rotateOverZAxis(Vector3f vectorToRotate, float radian){
