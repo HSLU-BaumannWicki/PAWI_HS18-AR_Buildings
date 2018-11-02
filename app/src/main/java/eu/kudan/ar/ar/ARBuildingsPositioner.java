@@ -23,11 +23,11 @@ public class ARBuildingsPositioner {
     }
 
     public void startPositioning(){
-        this.buildingPositioners.forEach(positioner -> positioner.startPositioning());
+        this.buildingPositioners.forEach(position -> position.startPositioning());
     }
 
     public void stopPositioning(){
-        this.buildingPositioners.forEach(position -> position.startPositioning());
+        this.buildingPositioners.forEach(position -> position.stopPositioning());
     }
 
     public void rotateAllByDeg(float degrees){
