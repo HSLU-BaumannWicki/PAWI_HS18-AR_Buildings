@@ -1,4 +1,4 @@
-package eu.kudan.ar.ar.position.location;
+package commonlib.location;
 
 import com.jme3.math.Vector3f;
 

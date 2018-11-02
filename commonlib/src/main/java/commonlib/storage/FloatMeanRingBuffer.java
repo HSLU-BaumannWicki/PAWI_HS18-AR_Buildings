@@ -1,6 +1,6 @@
 package commonlib.storage;
 
-public class FloatMeanRingBuffer extends RingBufferImpl<Float> {
+public class FloatMeanRingBuffer extends MeanRingBufferAbstract<Float> {
 
     public FloatMeanRingBuffer(final int bufferSize){
         super(bufferSize);

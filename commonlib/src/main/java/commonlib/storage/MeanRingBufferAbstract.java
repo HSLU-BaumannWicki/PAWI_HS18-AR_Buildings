@@ -3,12 +3,12 @@ package commonlib.storage;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class RingBufferImpl<T> implements MeanRingBuffer<T> {
+public abstract class MeanRingBufferAbstract<T> implements MeanRingBuffer<T> {
     protected final List<T> buffer;
     protected int head;
     protected int size;
 
-    public RingBufferImpl(final int bufferSize){
+    public MeanRingBufferAbstract(final int bufferSize){
         this.head = 0;
         this.size = bufferSize;
         this.buffer = new ArrayList<>();
