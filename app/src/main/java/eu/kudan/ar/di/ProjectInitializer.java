@@ -7,12 +7,10 @@ import android.location.LocationManager;
 
 import com.jme3.math.Vector3f;
 
-import commonlib.location.AngleToNorthCalculator;
 import commonlib.location.LocationDistanceCalculator;
 import commonlib.model.BuildingModelSampleImpl;
 import commonlib.model.texture.Texturizer;
 import commonlib.model.texture.TexturizerModelBlack;
-import commonlib.rotation.ModelRotator;
 import commonlib.rotation.Rotator;
 import commonlib.rotation.VectorRotator;
 import commonlib.storage.FloatMeanRingBuffer;
@@ -46,16 +44,13 @@ public class ProjectInitializer {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-
-        AngleToNorthCalculator angleCalculator = new AngleToNorthCalculator();
         Texturizer blackTexture = new TexturizerModelBlack();
         BuildingModelSampleImpl buildingModel = new BuildingModelSampleImpl(model, blackTexture);
-        ModelRotator modelRotator = new ModelRotator(model);
         LocationDistanceCalculator locationDistanceCalculator = new LocationDistanceCalculator();
-        RingBufferImpl<Location> locationMean = new LocationMeanRingbufferImp(5);
+        RingBufferImpl<Location> locationMean = new LocationMeanRingbufferImp(10);
         LocationFilter locationFilter = new LocationFilter(locationMean, locationManager);
-        RingBufferImpl<Float> angleRingBuffer = new FloatMeanRingBuffer(10);
-        NorthSensorListener northSensorListener = new NorthSensorListener(sensorManager, angleRingBuffer);
+        RingBufferImpl<Float> angleRingBuffer = new FloatMeanRingBuffer(100);
+        NorthSensorListener northSensorListener = new NorthSensorListener(sensorManager, angleRingBuffer, 100);
         Rotator<Vector3f> vector3fRotator = new VectorRotator(new Vector3f());
 
         PhysicalNorthInitializer physicalNorthInitializer = new PhysicalNorthInitializer(northSensorListener, vector3fRotator);

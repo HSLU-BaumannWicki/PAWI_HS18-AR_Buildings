@@ -15,7 +15,8 @@ public class PhysicalNorthInitializer {
 
     public Vector3f getPhysicalNorthCorrectedVector(Vector3f gpsVectorToObject){
         this.vectorRotator.setRotatingObject(new Vector3f(gpsVectorToObject));
-        return this.vectorRotator.rotateByRadOverY(this.northSensorListener.getRadiant()*-1);
+        final float rad = this.northSensorListener.getRadiant();
+        return this.vectorRotator.rotateByRadOverY(-rad);
     }
 
     public void stopNorthSensor(){

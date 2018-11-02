@@ -19,9 +19,13 @@ public class NorthSensorListener implements SensorEventListener {
     private final Sensor accelerometer;
     private final RingBufferImpl<Float> radiantRingBuffer;
     private int state;
+    private int numberOfDatas = 0;
+    private final int maxNumberOfDatas;
 
     public NorthSensorListener(SensorManager sensorManager,
-                               RingBufferImpl<Float> ringBufferForRad){
+                               RingBufferImpl<Float> ringBufferForRad,
+                               final int maxNumberOfDatas){
+        this.maxNumberOfDatas = maxNumberOfDatas;
         this.radiantRingBuffer = ringBufferForRad;
         this.sensorManager = sensorManager;
         this.magneticSensor = this.sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -31,8 +35,10 @@ public class NorthSensorListener implements SensorEventListener {
     }
 
     public void startTrackingNorth(){
-        this.sensorManager.registerListener(this, this.magneticSensor, SensorManager.SENSOR_DELAY_GAME);
-        this.sensorManager.registerListener(this, this.accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        if(this.numberOfDatas < this.maxNumberOfDatas) {
+            this.sensorManager.registerListener(this, this.magneticSensor, SensorManager.SENSOR_DELAY_GAME);
+            this.sensorManager.registerListener(this, this.accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        }
     }
 
     public void stopTrackingNorth(){
@@ -50,6 +56,10 @@ public class NorthSensorListener implements SensorEventListener {
             System.arraycopy(event.values, 0, lastAccelerometer, 0, event.values.length);
         }
         if(this.state == (MAGNET_SENSOR_ID | ACCELERATOR_SENSOR_ID)){
+            if(this.numberOfDatas >= this.maxNumberOfDatas){
+                this.stopTrackingNorth();
+            }
+            this.numberOfDatas += 1;
             this.state &= ~MAGNET_SENSOR_ID;
             this.state &= ~ACCELERATOR_SENSOR_ID;
             float[] mR = new float[9];
