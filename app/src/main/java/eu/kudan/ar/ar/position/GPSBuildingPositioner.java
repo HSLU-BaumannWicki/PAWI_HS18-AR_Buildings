@@ -8,20 +8,17 @@ import commonlib.location.LocationDistanceCalculator;
 import commonlib.model.BuildingModel;
 import eu.kudan.ar.ar.position.location.LocationFilter;
 import eu.kudan.ar.ar.position.location.LocationFilterListener;
-import eu.kudan.ar.ar.position.location.ModelToRelativePositionRotator;
-import eu.kudan.ar.ar.position.location.PhysicalNorthRotatorProblem;
+import eu.kudan.ar.ar.position.location.PhysicalNorthInitializer;
 
 public class GPSBuildingPositioner implements BuildingPositioner, LocationFilterListener {
     private final LocationFilter locationFilter;
-    private final PhysicalNorthRotatorProblem physicalNorthRotatorProblem;
-    private final ModelToRelativePositionRotator modelToRelativePositionRotator;
+    private final PhysicalNorthInitializer physicalNorthInitializer;
     private final LocationDistanceCalculator locationDistanceCalculator;
-    public final BuildingModel buildingModel;
+    private final BuildingModel buildingModel;
 
-    public GPSBuildingPositioner(LocationFilter locationFilter, PhysicalNorthRotatorProblem physicalNorthRotatorProblem, ModelToRelativePositionRotator modelToRelativePositionRotator, LocationDistanceCalculator locationDistanceCalculator, BuildingModel buildingModel){
+    public GPSBuildingPositioner(LocationFilter locationFilter, PhysicalNorthInitializer physicalNorthInitializer, LocationDistanceCalculator locationDistanceCalculator, BuildingModel buildingModel){
         this.locationFilter = locationFilter;
-        this.physicalNorthRotatorProblem = physicalNorthRotatorProblem;
-        this.modelToRelativePositionRotator = modelToRelativePositionRotator;
+        this.physicalNorthInitializer = physicalNorthInitializer;
         this.locationDistanceCalculator = locationDistanceCalculator;
         this.buildingModel = buildingModel;
     }
@@ -30,8 +27,7 @@ public class GPSBuildingPositioner implements BuildingPositioner, LocationFilter
     public void onNewLocationUpdate(Location location) {
 
         Vector3f physicalPlaceForBuilding = locationDistanceCalculator.getDistancesBetween(location, this.buildingModel.getLocation());
-        //this.modelToRelativePositionRotator.rotateObjectForRelativePosition(physicalPlaceForBuilding);
-        Vector3f correctedBuildingPosition = this.physicalNorthRotatorProblem.getPhysicalNorthCorrectedVector(physicalPlaceForBuilding);
+        Vector3f correctedBuildingPosition = this.physicalNorthInitializer.getPhysicalNorthCorrectedVector(physicalPlaceForBuilding);
         this.buildingModel.setModelPosition(correctedBuildingPosition);
         this.buildingModel.unhide();
     }
@@ -40,14 +36,19 @@ public class GPSBuildingPositioner implements BuildingPositioner, LocationFilter
     public void startPositioning() {
         this.locationFilter.registerLocationFilterListener(this);
         this.locationFilter.startLocationFilter();
-        this.physicalNorthRotatorProblem.startNothSensor();
+        this.physicalNorthInitializer.startNothSensor();
     }
 
     @Override
     public void stopPositioning() {
         this.locationFilter.unregisterLocationFilterListener(this);
         this.locationFilter.stopLocationFilter();
-        this.physicalNorthRotatorProblem.stopNorthSensor();
+        this.physicalNorthInitializer.stopNorthSensor();
         this.buildingModel.hide();
+    }
+
+    @Override
+    public void rotateBuildingByDegrees(float degrees) {
+        this.buildingModel.rotateModelByDegOverY(degrees);
     }
 }
