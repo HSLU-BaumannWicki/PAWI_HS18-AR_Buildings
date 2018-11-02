@@ -1,9 +1,7 @@
 package eu.kudan.ar;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -14,8 +12,6 @@ import eu.kudan.kudan.ARActivity;
 public class ARMainActivity extends ARActivity implements SeekBar.OnSeekBarChangeListener {
     private ARBuildingsPositioner arBuilding;
     private SeekBar seekBar;
-    private Button buttonRotateLeft;
-    private Button buttonrotateRight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +22,7 @@ public class ARMainActivity extends ARActivity implements SeekBar.OnSeekBarChang
         setContentView(R.layout.ar_main_activity);
         this.seekBar = findViewById(R.id.seekBar2);
         this.seekBar.setOnSeekBarChangeListener(this);
+        this.setProgressText();
      }
 
     @Override
@@ -41,7 +38,6 @@ public class ARMainActivity extends ARActivity implements SeekBar.OnSeekBarChang
         this.arBuilding.stopPositioning();
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onResume(){
         super.onResume();
@@ -66,8 +62,7 @@ public class ARMainActivity extends ARActivity implements SeekBar.OnSeekBarChang
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        TextView tv = findViewById(R.id.progressText);
-        tv.setText((progress+1)+"");
+        this.setProgressText();
     }
 
     @Override
@@ -78,6 +73,11 @@ public class ARMainActivity extends ARActivity implements SeekBar.OnSeekBarChang
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    private void setProgressText(){
+        TextView tv = findViewById(R.id.progressText);
+        tv.setText((this.seekBar.getProgress()+1)+"");
     }
 }
 

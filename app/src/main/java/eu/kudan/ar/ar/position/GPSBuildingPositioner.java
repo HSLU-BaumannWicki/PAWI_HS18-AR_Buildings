@@ -25,7 +25,6 @@ public class GPSBuildingPositioner implements BuildingPositioner, LocationFilter
 
     @Override
     public void onNewLocationUpdate(Location location) {
-
         Vector3f physicalPlaceForBuilding = locationDistanceCalculator.getDistancesBetween(location, this.buildingModel.getLocation());
         Vector3f correctedBuildingPosition = this.physicalNorthInitializer.getPhysicalNorthCorrectedVector(physicalPlaceForBuilding);
         this.buildingModel.setModelPosition(correctedBuildingPosition);

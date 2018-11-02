@@ -14,8 +14,6 @@ public class FloatMeanRingBuffer extends RingBufferImpl<Float> {
             median = (this.buffer.get(this.buffer.size()/2) + this.buffer.get(this.buffer.size()/2 - 1)) / 2;
         else
             median = this.buffer.get(this.buffer.size()/2);
-        return median;/*
-        OptionalDouble average = this.buffer.stream().mapToDouble(i -> (double)i).average();
-        return (float) average.orElse(0);*/
+        return median;
     }
 }
