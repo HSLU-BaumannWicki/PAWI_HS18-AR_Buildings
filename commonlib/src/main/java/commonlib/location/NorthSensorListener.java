@@ -1,11 +1,11 @@
-package eu.kudan.ar.ar.position.location;
+package commonlib.location;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import commonlib.storage.RingBufferImpl;
+import commonlib.storage.MeanRingBufferAbstract;
 
 public class NorthSensorListener implements SensorEventListener {
     private final static int MAGNET_SENSOR_ID = 0b1;
@@ -17,13 +17,13 @@ public class NorthSensorListener implements SensorEventListener {
     private final SensorManager sensorManager;
     private final Sensor magneticSensor;
     private final Sensor accelerometer;
-    private final RingBufferImpl<Float> radiantRingBuffer;
+    private final MeanRingBufferAbstract<Float> radiantRingBuffer;
     private int state;
     private int numberOfDatas = 0;
     private final int maxNumberOfDatas;
 
     public NorthSensorListener(SensorManager sensorManager,
-                               RingBufferImpl<Float> ringBufferForRad,
+                               MeanRingBufferAbstract<Float> ringBufferForRad,
                                final int maxNumberOfDatas){
         this.maxNumberOfDatas = maxNumberOfDatas;
         this.radiantRingBuffer = ringBufferForRad;

@@ -3,7 +3,7 @@ package eu.kudan.ar.ar;
 import java.util.LinkedList;
 import java.util.List;
 
-import eu.kudan.ar.ar.position.BuildingPositioner;
+import commonlib.BuildingPositioner;
 
 public class ARBuildingsPositioner {
     private final List<BuildingPositioner> buildingPositioners;

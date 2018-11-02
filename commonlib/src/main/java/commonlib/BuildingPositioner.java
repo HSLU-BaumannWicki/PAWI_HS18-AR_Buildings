@@ -1,4 +1,4 @@
-package eu.kudan.ar.ar.position;
+package commonlib;
 
 public interface BuildingPositioner{
     public void startPositioning();

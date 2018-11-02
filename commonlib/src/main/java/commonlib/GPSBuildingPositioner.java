@@ -1,4 +1,4 @@
-package eu.kudan.ar.ar.position;
+package commonlib;
 
 import android.location.Location;
 
@@ -6,9 +6,9 @@ import com.jme3.math.Vector3f;
 
 import commonlib.location.LocationDistanceCalculator;
 import commonlib.model.BuildingModel;
-import eu.kudan.ar.ar.position.location.LocationFilter;
-import eu.kudan.ar.ar.position.location.LocationFilterListener;
-import eu.kudan.ar.ar.position.location.PhysicalNorthInitializer;
+import commonlib.location.LocationFilter;
+import commonlib.location.LocationFilterListener;
+import commonlib.location.PhysicalNorthInitializer;
 
 public class GPSBuildingPositioner implements BuildingPositioner, LocationFilterListener {
     private final LocationFilter locationFilter;

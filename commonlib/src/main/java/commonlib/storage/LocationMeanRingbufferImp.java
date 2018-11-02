@@ -6,7 +6,7 @@ import android.location.Location;
 import java.util.OptionalDouble;
 import java.util.function.ToDoubleFunction;
 
-public class LocationMeanRingbufferImp extends RingBufferImpl<Location> {
+public class LocationMeanRingbufferImp extends MeanRingBufferAbstract<Location> {
 
     public LocationMeanRingbufferImp(int bufferSize) {
         super(bufferSize);

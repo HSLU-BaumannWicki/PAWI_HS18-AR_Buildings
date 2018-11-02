@@ -1,4 +1,4 @@
-package eu.kudan.ar.ar.position.location;
+package commonlib.location;
 
 import android.location.Location;
 
