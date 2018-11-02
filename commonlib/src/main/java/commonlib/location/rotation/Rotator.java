@@ -1,4 +1,4 @@
-package commonlib.rotation;
+package commonlib.location.rotation;
 
 public interface Rotator<T> {
     public T rotateByRadOverY(float rad);

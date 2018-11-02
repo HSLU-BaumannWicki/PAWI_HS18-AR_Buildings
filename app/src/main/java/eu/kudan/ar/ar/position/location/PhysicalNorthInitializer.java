@@ -2,7 +2,7 @@ package eu.kudan.ar.ar.position.location;
 
 import com.jme3.math.Vector3f;
 
-import commonlib.rotation.Rotator;
+import commonlib.location.rotation.Rotator;
 
 public class PhysicalNorthInitializer {
     private final NorthSensorListener northSensorListener;

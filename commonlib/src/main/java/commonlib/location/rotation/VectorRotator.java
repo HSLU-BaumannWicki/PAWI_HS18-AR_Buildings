@@ -1,4 +1,4 @@
-package commonlib.rotation;
+package commonlib.location.rotation;
 
 import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector2f;
