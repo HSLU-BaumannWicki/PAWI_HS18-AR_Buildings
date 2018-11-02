@@ -1,1 +1,3 @@
-include ':app', ':KudanAR'
+include ':app'
+include ':KudanAR'
+include ':commonlib'

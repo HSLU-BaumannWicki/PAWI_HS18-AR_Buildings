@@ -1,6 +1,7 @@
 package eu.kudan.ar.dto;
 
 import android.location.Location;
+import android.util.Log;
 
 import eu.kudan.kudan.ARLightMaterial;
 import eu.kudan.kudan.ARMeshNode;
@@ -24,15 +25,15 @@ public class ExampleBuildingImpl implements Building {
         ARModelImporter importer = new ARModelImporter();
         importer.loadFromAsset("ARBuilding.armodel");
         myModel = importer.getNode();
-        myModel.rotateByDegrees(-60, 0,1,0 );
+        Log.e("ERROR", myModel.toString());
+        myModel.rotateByDegrees(-150, 0,1,0 );
         myModel.scaleByUniform(1f);
 
-
-
         ARLightMaterial concreteMaterial = new ARLightMaterial();
-        concreteMaterial.setAmbient(1f, 1f, 1f);
-
+        concreteMaterial.setAmbient(1f, 100f, 100f);
+        int i = 0;
         for(ARMeshNode meshNode : myModel.getMeshNodes()) {
+            Log.e("TEST", "" + i++);
             meshNode.setMaterial(concreteMaterial);
         }
     }
