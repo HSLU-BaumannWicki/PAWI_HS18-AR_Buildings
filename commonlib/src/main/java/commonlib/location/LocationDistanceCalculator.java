@@ -28,7 +28,7 @@ public class LocationDistanceCalculator {
     }
 
     private float heightDistanceInMeters(final Location location){
-        return (float) (this.location.getAltitude() - location.getAltitude());
+        return (float) (location.getAltitude() - this.location.getAltitude());
     }
 
     public Vector3f getDistancesBetween(Location a, Location b){
