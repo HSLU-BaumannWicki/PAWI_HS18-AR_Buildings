@@ -1,12 +1,15 @@
 language: android
+
 before_script:
-        - chmod +x gradlew
+  - chmod +x gradlew
+  - yes | sdkmanager --licenses
+
 android:
-        components:
-                - build-tools-28.0.3
-                - android-27
-                - extra-google-google_play_services
-                - extra-google-m2repository
-                - extra-android-m2repository
-                - addon-google_apis-google-26
-                - sys-img-armeabi-v7a-android-27
+  components:
+    - build-tools-28.0.3
+    - android-27
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - addon-google_apis-google-26
+    - sys-img-armeabi-v7a-android-27
