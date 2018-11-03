@@ -1,4 +1,10 @@
 language: android
+
+env:
+global:
+ # install timeout in minutes (2 minutes by default)
+  - ADB_INSTALL_TIMEOUT=8
+
 cache:
   directories:
     - $HOME/.gradle/caches/
@@ -20,7 +26,15 @@ before_install:
 
 before_script:
   - chmod +x gradlew
+  - echo no | android create avd --force -n test -t android-27 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+script:
+  - android list target
+  - ./gradlew connectedAndroidTest -PdisablePreDex
