@@ -32,3 +32,10 @@ before_cache:
 
 script:
   - ./gradlew build -x test
+
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key: $GIT_AUTH
+  on:
+    tags: true
