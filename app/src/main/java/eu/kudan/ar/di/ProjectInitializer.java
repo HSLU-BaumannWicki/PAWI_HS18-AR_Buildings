@@ -14,6 +14,7 @@ import commonlib.model.texture.Texturizer;
 import commonlib.model.texture.TexturizerModelBlack;
 import commonlib.location.rotation.Rotator;
 import commonlib.location.rotation.VectorRotator;
+import commonlib.model.texture.TexturizerModelConcreteGray;
 import commonlib.storage.FloatMeanRingBuffer;
 import commonlib.storage.LocationMeanRingbufferImp;
 import commonlib.storage.MeanRingBufferAbstract;
@@ -24,8 +25,11 @@ import commonlib.location.NorthSensorListener;
 import commonlib.location.PhysicalNorthInitializer;
 import eu.kudan.kudan.ARAPIKey;
 import eu.kudan.kudan.ARGyroManager;
+import eu.kudan.kudan.ARLightMaterial;
+import eu.kudan.kudan.ARMeshNode;
 import eu.kudan.kudan.ARModelImporter;
 import eu.kudan.kudan.ARModelNode;
+import eu.kudan.kudan.ARTexture2D;
 
 public class ProjectInitializer {
 
@@ -41,14 +45,14 @@ public class ProjectInitializer {
         gyroManager.getWorld().addChild(model);
 
 
-        model.rotateByRadians((float) Math.toRadians(-100), 0,1,0);
+        // model.rotateByRadians((float) Math.toRadians(-100), 0,1,0);
 
 
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-        Texturizer blackTexture = new TexturizerModelBlack();
-        BuildingModelSampleImpl buildingModel = new BuildingModelSampleImpl(model, blackTexture);
+        Texturizer grayTexture = new TexturizerModelConcreteGray();
+        BuildingModelSampleImpl buildingModel = new BuildingModelSampleImpl(model, grayTexture);
         LocationDistanceCalculator locationDistanceCalculator = new LocationDistanceCalculator();
         MeanRingBufferAbstract<Location> locationMean = new LocationMeanRingbufferImp(10);
         LocationFilter locationFilter = new LocationFilter(locationMean, locationManager);
