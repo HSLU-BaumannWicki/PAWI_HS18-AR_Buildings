@@ -35,7 +35,7 @@ script:
 deploy:
   skip_cleanup: true
   provider: releases
-  file:"app/build/outputs/apk/*.apk"
+  file:"app/build/outputs/apk/debug/*.apk"
   api_key: $GIT_AUTH
   on:
     tags: true
