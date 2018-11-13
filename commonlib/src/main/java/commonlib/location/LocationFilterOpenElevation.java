@@ -14,7 +14,12 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 public class LocationFilterOpenElevation implements LocationFilterElevation {
-
+    /**
+     * Takes in the GPS coordinates and returns the elevation for a that given point
+     * @param latitude -90°< x < 90°
+     * @param longitude -180° < x < 180°
+     * @return Height in metres (-100000 on error)
+     */
     @Override
     public double getAltitude(double latitude, double longitude) {
         double altitude = -100000;
