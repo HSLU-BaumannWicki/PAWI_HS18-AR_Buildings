@@ -26,6 +26,7 @@ public class LocationFilter implements LocationListener {
     public void onLocationChanged(Location location) {
         if (location.getAccuracy() <= LOCATION_ACCURACY_IN_METER) {
             Location meanLocation = this.locationMean.getNewMean(location);
+            meanLocation.setAltitude(0.0f);
             this.listeners.forEach(listener -> listener.onNewLocationUpdate(meanLocation));
         }
     }
