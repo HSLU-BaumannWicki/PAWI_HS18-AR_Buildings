@@ -29,7 +29,10 @@ public class LocationFilter implements LocationListener {
     public void onLocationChanged(Location location) {
         if (location.getAccuracy() <= LOCATION_ACCURACY_IN_METER) {
             Location meanLocation = this.locationMean.getNewMean(location);
-            meanLocation.setAltitude(this.locationElevation.getAltitude(meanLocation.getLatitude(), meanLocation.getLongitude()));
+            double altitude = this.locationElevation.getAltitude(meanLocation.getLatitude(), meanLocation.getLongitude());
+            if (altitude != LocationFilterElevation.ELEVATION_ON_ERROR) {
+                meanLocation.setAltitude(altitude);
+            }
             Log.d("LocationFilter", "Lat: " + meanLocation.getLatitude() + "; Lon: " + meanLocation.getLongitude() + "; Alt: " + meanLocation.getAltitude());
             this.listeners.forEach(listener -> listener.onNewLocationUpdate(meanLocation));
         }
