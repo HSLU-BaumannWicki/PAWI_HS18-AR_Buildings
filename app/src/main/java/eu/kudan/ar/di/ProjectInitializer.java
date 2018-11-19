@@ -8,28 +8,24 @@ import android.support.annotation.NonNull;
 
 import com.jme3.math.Vector3f;
 
+import commonlib.GPSBuildingPositioner;
 import commonlib.location.LocationDistanceCalculator;
-import commonlib.model.BuildingModelSampleImpl;
-import commonlib.model.texture.Texturizer;
-import commonlib.model.texture.TexturizerModelBlack;
+import commonlib.location.LocationFilter;
+import commonlib.location.NorthSensorListener;
+import commonlib.location.PhysicalNorthInitializer;
 import commonlib.location.rotation.Rotator;
 import commonlib.location.rotation.VectorRotator;
-import commonlib.model.texture.TexturizerModelConcreteGray;
+import commonlib.model.BuildingModelSampleImpl;
+import commonlib.model.texture.Texturizer;
+import commonlib.model.texture.TexturizerModelGlassAndConcrete;
 import commonlib.storage.FloatMeanRingBuffer;
 import commonlib.storage.LocationMeanRingbufferImp;
 import commonlib.storage.MeanRingBufferAbstract;
 import eu.kudan.ar.ar.ARBuildingsPositioner;
-import commonlib.GPSBuildingPositioner;
-import commonlib.location.LocationFilter;
-import commonlib.location.NorthSensorListener;
-import commonlib.location.PhysicalNorthInitializer;
 import eu.kudan.kudan.ARAPIKey;
 import eu.kudan.kudan.ARGyroManager;
-import eu.kudan.kudan.ARLightMaterial;
-import eu.kudan.kudan.ARMeshNode;
 import eu.kudan.kudan.ARModelImporter;
 import eu.kudan.kudan.ARModelNode;
-import eu.kudan.kudan.ARTexture2D;
 
 public class ProjectInitializer {
 
@@ -51,8 +47,8 @@ public class ProjectInitializer {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-        Texturizer grayTexture = new TexturizerModelConcreteGray();
-        BuildingModelSampleImpl buildingModel = new BuildingModelSampleImpl(model, grayTexture);
+        Texturizer variableTexture = new TexturizerModelGlassAndConcrete();
+        BuildingModelSampleImpl buildingModel = new BuildingModelSampleImpl(model, variableTexture);
         LocationDistanceCalculator locationDistanceCalculator = new LocationDistanceCalculator();
         MeanRingBufferAbstract<Location> locationMean = new LocationMeanRingbufferImp(10);
         LocationFilter locationFilter = new LocationFilter(locationMean, locationManager);
