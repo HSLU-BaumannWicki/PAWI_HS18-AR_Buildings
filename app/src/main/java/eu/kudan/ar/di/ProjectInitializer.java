@@ -17,7 +17,7 @@ import commonlib.location.rotation.Rotator;
 import commonlib.location.rotation.VectorRotator;
 import commonlib.model.BuildingModelSampleImpl;
 import commonlib.model.texture.Texturizer;
-import commonlib.model.texture.TexturizerModelConcreteGlass;
+import commonlib.model.texture.TexturizerModelConcreteGlassWood;
 import commonlib.storage.FloatMeanRingBuffer;
 import commonlib.storage.LocationMeanRingbufferImp;
 import commonlib.storage.MeanRingBufferAbstract;
@@ -47,7 +47,7 @@ public class ProjectInitializer {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-        Texturizer variableTexture = new TexturizerModelConcreteGlass();
+        Texturizer variableTexture = new TexturizerModelConcreteGlassWood();
         BuildingModelSampleImpl buildingModel = new BuildingModelSampleImpl(model, variableTexture);
         LocationDistanceCalculator locationDistanceCalculator = new LocationDistanceCalculator();
         MeanRingBufferAbstract<Location> locationMean = new LocationMeanRingbufferImp(10);
