@@ -1,5 +1,7 @@
 package commonlib.model.texture;
 
+import android.util.Log;
+
 import eu.kudan.kudan.ARLightMaterial;
 import eu.kudan.kudan.ARModelNode;
 import eu.kudan.kudan.ARTexture2D;
@@ -16,6 +18,7 @@ public class TexturizerModelConcreteGray implements Texturizer {
         concreteMaterial.setTexture(concreteTexture);
         concreteMaterial.setAmbient(0.8f, 0.8f, 0.8f);
 
+        model.getMeshNodes().forEach(node -> Log.d("MeshNode", node.getMesh().toString()));
         model.getMeshNodes().forEach(node -> node.setMaterial(concreteMaterial));
         return model;
     }
