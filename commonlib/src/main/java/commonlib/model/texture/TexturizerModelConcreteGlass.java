@@ -4,7 +4,7 @@ import eu.kudan.kudan.ARLightMaterial;
 import eu.kudan.kudan.ARModelNode;
 import eu.kudan.kudan.ARTexture2D;
 
-public class TexturizerModelGlassAndConcrete implements Texturizer {
+public class TexturizerModelConcreteGlass implements Texturizer {
     @Override
     public ARModelNode setTexture(ARModelNode model) {
         ARTexture2D concreteTexture = new ARTexture2D();
