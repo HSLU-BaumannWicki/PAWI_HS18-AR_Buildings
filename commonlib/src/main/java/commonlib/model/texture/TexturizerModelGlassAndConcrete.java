@@ -26,7 +26,7 @@ public class TexturizerModelGlassAndConcrete implements Texturizer {
         model.getMeshNodes().forEach(
                 arMeshNode -> {if (arMeshNode.getName().contains("glass")) arMeshNode.setMaterial(glassMaterial);});
         model.getMeshNodes().forEach(
-                arMeshNode -> {if (arMeshNode.getName().contains("concrete")) arMeshNode.setMaterial(concreteMaterial);});
+                arMeshNode -> {if (!(arMeshNode.getName().contains("glass"))) arMeshNode.setMaterial(concreteMaterial);});
 
         return model;
     }
