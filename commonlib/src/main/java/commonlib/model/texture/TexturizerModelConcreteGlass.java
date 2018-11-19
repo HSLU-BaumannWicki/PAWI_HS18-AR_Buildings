@@ -23,11 +23,9 @@ public class TexturizerModelConcreteGlass implements Texturizer {
         glassMaterial.setReflectivity(0.5f);
         glassMaterial.setAmbient(0.8f,0.8f,0.8f);
 
+        model.getMeshNodes().forEach(arMeshNode -> arMeshNode.setMaterial(concreteMaterial));
         model.getMeshNodes().forEach(
                 arMeshNode -> {if (arMeshNode.getName().contains("glass")) arMeshNode.setMaterial(glassMaterial);});
-        model.getMeshNodes().forEach(
-                arMeshNode -> {if (!(arMeshNode.getName().contains("glass"))) arMeshNode.setMaterial(concreteMaterial);});
-
         return model;
     }
 }
