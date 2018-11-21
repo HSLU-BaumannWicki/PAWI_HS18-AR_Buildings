@@ -14,9 +14,9 @@ import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
 public class AsyncElevationRequest extends AsyncTask<URL, Void, Double>{
-    private LocationFilterOpenElevation callee;
+    private AsyncElevationRequestCallee callee;
 
-    public AsyncElevationRequest(LocationFilterOpenElevation callee){
+    public AsyncElevationRequest(AsyncElevationRequestCallee callee){
         this.callee = callee;
     }
 
