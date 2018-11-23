@@ -5,10 +5,8 @@ public interface LocationFilterElevation {
 
     /**
      * Returns the altitude/elevation for a given GPS location.
-     *
-     * @param latitude
-     * @param longitude
-     * @return altitude (-0d on error)
+     * 
+     * @return altitude as a double (ELEVATION_ON_ERROR on error)
      */
     double getAltitude(double latitude, double longitude);
 }

@@ -60,6 +60,8 @@ public class AsyncElevationRequest extends AsyncTask<URL, Void, Double>{
 
     @Override
     protected void onPostExecute(Double result) {
-        if (result != LocationFilterElevation.ELEVATION_ON_ERROR) callee.setAltitude(result);
+        if (result != LocationFilterElevation.ELEVATION_ON_ERROR) {
+            callee.setAltitude(result);
+        }
     }
 }
