@@ -18,9 +18,7 @@ public class LocationFilterOpenElevation implements LocationFilterElevation  {
 
     /**
      * Takes in the GPS coordinates and returns the elevation for a that given point
-     * @param latitude -90°< x < 90°
-     * @param longitude -180° < x < 180°
-     * @return Height in metres (-0.0 on error)
+     * @return Height in metres (LocationFilterElevation.ELEVATION_ON_ERROR on error)
      */
     @Override
     public double getAltitude(double latitude, double longitude) {
