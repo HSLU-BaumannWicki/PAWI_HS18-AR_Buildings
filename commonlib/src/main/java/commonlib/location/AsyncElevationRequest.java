@@ -34,11 +34,11 @@ public class AsyncElevationRequest extends AsyncTask<URL, Void, Double>{
             connection.connect();
             InputStream stream = null;
             int responseCode = connection.getResponseCode();
-            if (responseCode != HttpsURLConnection.HTTP_OK) {
-                Log.e("LocationFilterOpenElevation", "HTTPS Error Code " + String.valueOf(responseCode));
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                stream = connection.getInputStream();
             }
             else {
-                stream = connection.getInputStream();
+                Log.e("LocationFilterOpenElevation", "HTTPS Error Code " + String.valueOf(responseCode));
             }
 
 
