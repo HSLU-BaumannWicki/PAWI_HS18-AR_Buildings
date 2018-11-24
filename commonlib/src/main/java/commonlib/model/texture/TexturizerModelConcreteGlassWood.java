@@ -5,25 +5,38 @@ import eu.kudan.kudan.ARModelNode;
 import eu.kudan.kudan.ARTexture2D;
 
 public class TexturizerModelConcreteGlassWood implements Texturizer {
+    private ARTexture2D concreteTexture;
+    private ARTexture2D glassTexture;
+    private ARTexture2D woodTexture;
+    private ARLightMaterial concreteMaterial;
+    private ARLightMaterial glassMaterial;
+    private ARLightMaterial woodMaterial;
+
+
+    public TexturizerModelConcreteGlassWood(ARTexture2D concreteTexture, ARTexture2D glassTexture,
+                                        ARTexture2D woodTexture, ARLightMaterial concreteMaterial,
+                                        ARLightMaterial glassMaterial, ARLightMaterial woodMaterial){
+        this.concreteTexture = concreteTexture;
+        this.glassTexture = glassTexture;
+        this.woodTexture = woodTexture;
+        this.concreteMaterial = concreteMaterial;
+        this.glassMaterial = glassMaterial;
+        this.woodMaterial = woodMaterial;
+    }
+
     @Override
     public ARModelNode setTexture(ARModelNode model) {
-        ARTexture2D concreteTexture = new ARTexture2D();
-        ARTexture2D glassTexture = new ARTexture2D();
-        ARTexture2D woodTexture = new ARTexture2D();
 
         concreteTexture.loadFromAsset("concrete.jpg");
         glassTexture.loadFromAsset("glass.jpg");
         woodTexture.loadFromAsset("wood.jpg");
 
-        ARLightMaterial concreteMaterial = new ARLightMaterial();
         concreteMaterial.setTexture(concreteTexture);
         concreteMaterial.setAmbient(0.8f, 0.8f, 0.8f);
 
-        ARLightMaterial woodMaterial = new ARLightMaterial();
         woodMaterial.setTexture(woodTexture);
         woodMaterial.setAmbient(0.8f, 0.8f, 0.8f);
 
-        ARLightMaterial glassMaterial = new ARLightMaterial();
         glassMaterial.setTexture(glassTexture);
         glassMaterial.setAlpha(0.4f);
         glassMaterial.setReflectivity(0.5f);
