@@ -11,6 +11,7 @@ import com.jme3.math.Vector3f;
 import commonlib.GPSBuildingPositioner;
 import commonlib.location.LocationDistanceCalculator;
 import commonlib.location.LocationFilter;
+import commonlib.location.LocationFilterElevationFactory;
 import commonlib.location.NorthSensorListener;
 import commonlib.location.PhysicalNorthInitializer;
 import commonlib.location.rotation.Rotator;
@@ -51,7 +52,8 @@ public class ProjectInitializer {
         BuildingModelSampleImpl buildingModel = new BuildingModelSampleImpl(model, variableTexture);
         LocationDistanceCalculator locationDistanceCalculator = new LocationDistanceCalculator();
         MeanRingBufferAbstract<Location> locationMean = new LocationMeanRingbufferImp(10);
-        LocationFilter locationFilter = new LocationFilter(locationMean, locationManager);
+        LocationFilterElevationFactory locationFilterElevationFactory = new LocationFilterElevationFactory();
+        LocationFilter locationFilter = new LocationFilter(locationMean, locationManager, locationFilterElevationFactory);
         MeanRingBufferAbstract<Float> angleRingBuffer = new FloatMeanRingBuffer(100);
         NorthSensorListener northSensorListener = new NorthSensorListener(sensorManager, angleRingBuffer, 100);
         Rotator<Vector3f> vector3fRotator = new VectorRotator(new Vector3f());

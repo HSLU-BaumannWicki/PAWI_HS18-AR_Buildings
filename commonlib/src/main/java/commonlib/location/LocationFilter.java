@@ -19,10 +19,11 @@ public class LocationFilter implements LocationListener {
     private final LocationManager locationManager;
     private final LocationFilterElevation locationElevation;
 
-    public LocationFilter(MeanRingBuffer locationMean, LocationManager locationManager){
+    public LocationFilter(MeanRingBuffer locationMean, LocationManager locationManager,
+                          LocationFilterElevationFactory locationFilterElevationFactory){
         this.locationManager = locationManager;
         this.locationMean = locationMean;
-        this.locationElevation = LocationFilterElevationFactory.getLocationFilterElevationImpl();
+        this.locationElevation = locationFilterElevationFactory.getLocationFilterElevationImpl();
     }
 
     @Override
