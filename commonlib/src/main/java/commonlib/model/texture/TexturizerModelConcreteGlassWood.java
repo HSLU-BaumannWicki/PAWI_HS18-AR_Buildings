@@ -22,10 +22,6 @@ public class TexturizerModelConcreteGlassWood implements Texturizer {
         this.concreteMaterial = concreteMaterial;
         this.glassMaterial = glassMaterial;
         this.woodMaterial = woodMaterial;
-    }
-
-    @Override
-    public ARModelNode setTexture(ARModelNode model) {
 
         concreteTexture.loadFromAsset("concrete.jpg");
         glassTexture.loadFromAsset("glass.jpg");
@@ -41,7 +37,10 @@ public class TexturizerModelConcreteGlassWood implements Texturizer {
         glassMaterial.setAlpha(0.4f);
         glassMaterial.setReflectivity(0.5f);
         glassMaterial.setAmbient(0.8f,0.8f,0.8f);
+    }
 
+    @Override
+    public ARModelNode setTexture(ARModelNode model) {
         model.getMeshNodes().forEach(arMeshNode -> arMeshNode.setMaterial(concreteMaterial));
         model.getMeshNodes().forEach(
                 arMeshNode -> {if (arMeshNode.getName().contains("glass")) arMeshNode.setMaterial(glassMaterial);});
