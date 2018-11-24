@@ -77,7 +77,8 @@ public class LocationFilterOpenElevation implements LocationFilterElevation, Asy
         return Math.round(number * 1000000) / 1000000.0;
     }
 
-    protected void setAltitude(double altitude){
+    @Override
+    public void setAltitude(double altitude){
         this.altitude = altitude;
     }
 }
