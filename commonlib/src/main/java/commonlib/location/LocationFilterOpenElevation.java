@@ -5,7 +5,7 @@ import android.util.Log;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class LocationFilterOpenElevation implements LocationFilterElevation  {
+public class LocationFilterOpenElevation implements LocationFilterElevation, AsyncElevationRequestCallee {
     private double altitude;
     private double roundedLatitude;
     private double roundedLongitude;
