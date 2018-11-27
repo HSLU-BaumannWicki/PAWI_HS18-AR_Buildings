@@ -7,4 +7,6 @@
     <string name="information_title_about_permission">Sorry but I need all of those permissions to start</string>
     <string name="title_activity_main_activitytest">MainActivitytest</string>
     <string name="request_permission_again_button">Request Again</string>
+    <string name="no_location_found">No location found till now</string>
+    <string name="restart_north_init">Reinitialize north</string>
 </resources>

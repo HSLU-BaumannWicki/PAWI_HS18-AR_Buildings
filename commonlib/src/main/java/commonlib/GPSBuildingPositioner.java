@@ -5,10 +5,10 @@ import android.location.Location;
 import com.jme3.math.Vector3f;
 
 import commonlib.location.LocationDistanceCalculator;
-import commonlib.model.BuildingModel;
 import commonlib.location.LocationFilter;
 import commonlib.location.LocationFilterListener;
 import commonlib.location.PhysicalNorthInitializer;
+import commonlib.model.BuildingModel;
 
 public class GPSBuildingPositioner implements BuildingPositioner, LocationFilterListener {
     private final LocationFilter locationFilter;

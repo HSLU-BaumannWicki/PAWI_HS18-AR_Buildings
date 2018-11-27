@@ -29,6 +29,7 @@ import eu.kudan.kudan.ARGyroManager;
 import eu.kudan.kudan.ARLightMaterial;
 import eu.kudan.kudan.ARModelImporter;
 import eu.kudan.kudan.ARModelNode;
+import eu.kudan.kudan.ARTexture2D;
 
 public class ProjectInitializer {
 

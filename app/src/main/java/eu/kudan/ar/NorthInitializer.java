@@ -23,6 +23,7 @@ public class NorthInitializer extends AppCompatActivity implements SensorEventLi
     private final static int ACCELERATOR_SENSOR_ID = 0b10;
     private float[] lastAccelerometer = new float[3];
     private float[] lastMagnetometer = new float[3];
+    private SensorManager sensorManager;
     private int state;
     private MeanRingBuffer<Float> angleMeanBuffer = new FloatMeanRingBuffer(10);
 
@@ -38,6 +39,7 @@ public class NorthInitializer extends AppCompatActivity implements SensorEventLi
         this.imageView = findViewById(R.id.imageView);
         SensorManager sensorManager = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         this.northAngleCalculator = new NorthAngleCalculator();
+        this.sensorManager = sensorManager;
         this.magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         this.accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(this, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
@@ -79,10 +81,11 @@ public class NorthInitializer extends AppCompatActivity implements SensorEventLi
     }
 
     private void startNextState() {
+        this.sensorManager.unregisterListener(this);
         if(isInLegalNorthAngle(this.angleMeanBuffer.getNewMean())){
             Intent startARActivityIntent = new Intent(this, ARMainActivity.class);
             startARActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startARActivityIntent.putExtra("angleToNorth", this.angleMeanBuffer.getNewMean());
+            //startARActivityIntent.putExtra("angleToNorth", this.angleMeanBuffer.getNewMean());
             this.startActivity(startARActivityIntent);
             ActivityCompat.finishAffinity(this);
         }
