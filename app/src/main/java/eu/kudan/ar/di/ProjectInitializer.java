@@ -8,25 +8,24 @@ import android.support.annotation.NonNull;
 
 import com.jme3.math.Vector3f;
 
+import commonlib.GPSBuildingPositioner;
 import commonlib.location.LocationDistanceCalculator;
-import commonlib.model.BuildingModelSampleImpl;
-import commonlib.model.texture.Texturizer;
-import commonlib.model.texture.TexturizerModelBlack;
+import commonlib.location.LocationFilter;
+import commonlib.location.LocationFilterElevationFactory;
+import commonlib.location.NorthSensorListener;
+import commonlib.location.PhysicalNorthInitializer;
 import commonlib.location.rotation.Rotator;
 import commonlib.location.rotation.VectorRotator;
-import commonlib.model.texture.TexturizerModelConcreteGray;
+import commonlib.model.BuildingModelSampleImpl;
+import commonlib.model.texture.Texturizer;
+import commonlib.model.texture.TexturizerModelConcreteGlassWood;
 import commonlib.storage.FloatMeanRingBuffer;
 import commonlib.storage.LocationMeanRingbufferImp;
 import commonlib.storage.MeanRingBufferAbstract;
 import eu.kudan.ar.ar.ARBuildingsPositioner;
-import commonlib.GPSBuildingPositioner;
-import commonlib.location.LocationFilter;
-import commonlib.location.NorthSensorListener;
-import commonlib.location.PhysicalNorthInitializer;
 import eu.kudan.kudan.ARAPIKey;
 import eu.kudan.kudan.ARGyroManager;
 import eu.kudan.kudan.ARLightMaterial;
-import eu.kudan.kudan.ARMeshNode;
 import eu.kudan.kudan.ARModelImporter;
 import eu.kudan.kudan.ARModelNode;
 import eu.kudan.kudan.ARTexture2D;
@@ -44,25 +43,33 @@ public class ProjectInitializer {
         ARModelNode model = importer.getNode();
         gyroManager.getWorld().addChild(model);
 
-
-        // model.rotateByRadians((float) Math.toRadians(-100), 0,1,0);
-
-
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-        Texturizer grayTexture = new TexturizerModelConcreteGray();
-        BuildingModelSampleImpl buildingModel = new BuildingModelSampleImpl(model, grayTexture);
+        ARTexture2D concreteTexture = new ARTexture2D();
+        ARTexture2D glassTexture = new ARTexture2D();
+        ARTexture2D woodTexture = new ARTexture2D();
+        ARLightMaterial concreteMaterial = new ARLightMaterial();
+        ARLightMaterial glassMaterial = new ARLightMaterial();
+        ARLightMaterial woodMaterial = new ARLightMaterial();
+        Texturizer variableTexture = new TexturizerModelConcreteGlassWood(
+                concreteTexture, glassTexture, woodTexture, concreteMaterial,glassMaterial,woodMaterial);
+        BuildingModelSampleImpl buildingModel = new BuildingModelSampleImpl(model, variableTexture);
         LocationDistanceCalculator locationDistanceCalculator = new LocationDistanceCalculator();
         MeanRingBufferAbstract<Location> locationMean = new LocationMeanRingbufferImp(10);
-        LocationFilter locationFilter = new LocationFilter(locationMean, locationManager);
+        LocationFilterElevationFactory locationFilterElevationFactory = new LocationFilterElevationFactory();
+        LocationFilter locationFilter = new LocationFilter(locationMean,
+                locationManager, locationFilterElevationFactory);
         MeanRingBufferAbstract<Float> angleRingBuffer = new FloatMeanRingBuffer(100);
-        NorthSensorListener northSensorListener = new NorthSensorListener(sensorManager, angleRingBuffer, 100);
+        NorthSensorListener northSensorListener = new NorthSensorListener(
+                sensorManager, angleRingBuffer, 100);
         Rotator<Vector3f> vector3fRotator = new VectorRotator(new Vector3f());
 
-        PhysicalNorthInitializer physicalNorthInitializer = new PhysicalNorthInitializer(northSensorListener, vector3fRotator);
+        PhysicalNorthInitializer physicalNorthInitializer = new PhysicalNorthInitializer(
+                northSensorListener, vector3fRotator);
 
-        GPSBuildingPositioner gpsPositioner = new GPSBuildingPositioner(locationFilter, physicalNorthInitializer, locationDistanceCalculator, buildingModel);
+        GPSBuildingPositioner gpsPositioner = new GPSBuildingPositioner(locationFilter,
+                physicalNorthInitializer, locationDistanceCalculator, buildingModel);
         return new ARBuildingsPositioner(gpsPositioner);
     }
 

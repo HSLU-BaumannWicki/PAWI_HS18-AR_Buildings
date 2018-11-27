@@ -5,6 +5,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,16 +17,24 @@ public class LocationFilter implements LocationListener {
     private List<LocationFilterListener> listeners = new ArrayList<>();
     private MeanRingBuffer<Location> locationMean;
     private final LocationManager locationManager;
+    private final LocationFilterElevation locationElevation;
 
-    public LocationFilter(MeanRingBuffer locationMean, LocationManager locationManager){
+    public LocationFilter(MeanRingBuffer locationMean, LocationManager locationManager,
+                          LocationFilterElevationFactory locationFilterElevationFactory){
         this.locationManager = locationManager;
         this.locationMean = locationMean;
+        this.locationElevation = locationFilterElevationFactory.getLocationFilterElevationImpl();
     }
 
     @Override
     public void onLocationChanged(Location location) {
         if (location.getAccuracy() <= LOCATION_ACCURACY_IN_METER) {
             Location meanLocation = this.locationMean.getNewMean(location);
+            double altitude = this.locationElevation.getAltitude(meanLocation.getLatitude(), meanLocation.getLongitude());
+            if (altitude != LocationFilterElevation.ELEVATION_ON_ERROR) {
+                meanLocation.setAltitude(altitude);
+            }
+            Log.d("LocationFilter", "Lat: " + meanLocation.getLatitude() + "; Lon: " + meanLocation.getLongitude() + "; Alt: " + meanLocation.getAltitude());
             this.listeners.forEach(listener -> listener.onNewLocationUpdate(meanLocation));
         }
     }
