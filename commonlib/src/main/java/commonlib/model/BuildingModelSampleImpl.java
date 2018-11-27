@@ -22,6 +22,7 @@ public class BuildingModelSampleImpl implements BuildingModel {
         this.locationOfTheBuilding.setLongitude(LONGITUDE);
         this.locationOfTheBuilding.setLatitude(LATITUDE);
         myModel.rotateByDegrees((80-120+(5*20)-10), 0,1,0 );
+        this.hide();
     }
 
 

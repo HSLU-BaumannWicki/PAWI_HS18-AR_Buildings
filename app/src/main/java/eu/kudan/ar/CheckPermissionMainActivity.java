@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.IntentCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -93,7 +92,7 @@ public class CheckPermissionMainActivity extends AppCompatActivity {
     private void startActivityIfAllChecked() {
         Log.i("Debug", "The Activity should now start");
         if(isChecked(R.id.camera_permission_checkbox) && isChecked(R.id.location_permission_checkbox) && isChecked(R.id.storage_permission_checkbox)){
-            Intent startARActivityIntent = new Intent(this, ARMainActivity.class);
+            Intent startARActivityIntent = new Intent(this, NorthInitializer.class);
             startARActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             this.startActivity(startARActivityIntent);
             ActivityCompat.finishAffinity(this);

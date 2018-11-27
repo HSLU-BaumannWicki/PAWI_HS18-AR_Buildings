@@ -4,38 +4,31 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-
 import commonlib.storage.MeanRingBufferAbstract;
 
-public class NorthSensorListener implements SensorEventListener {
-    private final static int MAGNET_SENSOR_ID = 0b1;
-    private final static int ACCELERATOR_SENSOR_ID = 0b10;
-
-    private float[] lastAccelerometer = new float[3];
-    private float[] lastMagnetometer = new float[3];
-
+public class NorthSensorListener implements SensorEventListener{
+    private final NorthAngleCalculator northAngleCalculator;
     private final SensorManager sensorManager;
     private final Sensor magneticSensor;
     private final Sensor accelerometer;
     private final MeanRingBufferAbstract<Float> radiantRingBuffer;
-    private int state;
-    private int numberOfDatas = 0;
-    private final int maxNumberOfDatas;
+    private final int maxNumberOfListenings;
+    private int numberOfListenings;
 
     public NorthSensorListener(SensorManager sensorManager,
                                MeanRingBufferAbstract<Float> ringBufferForRad,
-                               final int maxNumberOfDatas){
-        this.maxNumberOfDatas = maxNumberOfDatas;
+                               NorthAngleCalculator northAngleCalculator,
+                               int maxNumberOfListenings){
         this.radiantRingBuffer = ringBufferForRad;
         this.sensorManager = sensorManager;
+        this.northAngleCalculator = northAngleCalculator;
+        this.maxNumberOfListenings = maxNumberOfListenings;
         this.magneticSensor = this.sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         this.accelerometer = this.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        this.sensorManager.registerListener(this, this.magneticSensor, SensorManager.SENSOR_DELAY_FASTEST);
-        this.sensorManager.registerListener(this, this.accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     public void startTrackingNorth(){
-        if(this.numberOfDatas < this.maxNumberOfDatas) {
+        if(this.isContinuingTrackingAllowed()) {
             this.sensorManager.registerListener(this, this.magneticSensor, SensorManager.SENSOR_DELAY_GAME);
             this.sensorManager.registerListener(this, this.accelerometer, SensorManager.SENSOR_DELAY_GAME);
         }
@@ -49,24 +42,15 @@ public class NorthSensorListener implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor == magneticSensor){
-            this.state |= MAGNET_SENSOR_ID;
-            System.arraycopy(event.values, 0, lastMagnetometer, 0, event.values.length);
+            this.northAngleCalculator.setMagnetometerData(event.values);
         }else if(event.sensor == accelerometer){
-            this.state |= ACCELERATOR_SENSOR_ID;
-            System.arraycopy(event.values, 0, lastAccelerometer, 0, event.values.length);
+            this.northAngleCalculator.setAcceleratorData(event.values);
         }
-        if(this.state == (MAGNET_SENSOR_ID | ACCELERATOR_SENSOR_ID)){
-            if(this.numberOfDatas >= this.maxNumberOfDatas){
+        if(this.northAngleCalculator.isAngleWithCurrentDataCalculable()){
+            if (!this.isContinuingTrackingAllowed()) {
                 this.stopTrackingNorth();
             }
-            this.numberOfDatas += 1;
-            this.state &= ~MAGNET_SENSOR_ID;
-            this.state &= ~ACCELERATOR_SENSOR_ID;
-            float[] mR = new float[9];
-            float[] orientationAngles = new float[3];
-            SensorManager.getRotationMatrix(mR, null, lastAccelerometer, lastMagnetometer);
-            SensorManager.getOrientation(mR, orientationAngles);
-            this.radiantRingBuffer.addObjectForMeanCalculation(orientationAngles[0]*-1);
+            this.radiantRingBuffer.addObjectForMeanCalculation(this.northAngleCalculator.calculateNorthAngleBasedOnData()*-1);
         }
     }
 
@@ -77,5 +61,9 @@ public class NorthSensorListener implements SensorEventListener {
 
     public float getRadiant(){
         return this.radiantRingBuffer.getNewMean();
+    }
+
+    private boolean isContinuingTrackingAllowed() {
+        return this.numberOfListenings < this.maxNumberOfListenings;
     }
 }

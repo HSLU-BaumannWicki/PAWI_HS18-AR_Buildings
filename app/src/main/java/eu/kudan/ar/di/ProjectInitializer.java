@@ -12,6 +12,7 @@ import commonlib.GPSBuildingPositioner;
 import commonlib.location.LocationDistanceCalculator;
 import commonlib.location.LocationFilter;
 import commonlib.location.LocationFilterElevationFactory;
+import commonlib.location.NorthAngleCalculator;
 import commonlib.location.NorthSensorListener;
 import commonlib.location.PhysicalNorthInitializer;
 import commonlib.location.rotation.Rotator;
@@ -28,7 +29,6 @@ import eu.kudan.kudan.ARGyroManager;
 import eu.kudan.kudan.ARLightMaterial;
 import eu.kudan.kudan.ARModelImporter;
 import eu.kudan.kudan.ARModelNode;
-import eu.kudan.kudan.ARTexture2D;
 
 public class ProjectInitializer {
 
@@ -61,8 +61,8 @@ public class ProjectInitializer {
         LocationFilter locationFilter = new LocationFilter(locationMean,
                 locationManager, locationFilterElevationFactory);
         MeanRingBufferAbstract<Float> angleRingBuffer = new FloatMeanRingBuffer(100);
-        NorthSensorListener northSensorListener = new NorthSensorListener(
-                sensorManager, angleRingBuffer, 100);
+        NorthAngleCalculator northAngleCalculator = new NorthAngleCalculator();
+        NorthSensorListener northSensorListener = new NorthSensorListener(sensorManager, angleRingBuffer, northAngleCalculator, 100);
         Rotator<Vector3f> vector3fRotator = new VectorRotator(new Vector3f());
 
         PhysicalNorthInitializer physicalNorthInitializer = new PhysicalNorthInitializer(
