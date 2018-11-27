@@ -1,6 +1,9 @@
 package eu.kudan.ar;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -78,6 +81,16 @@ public class ARMainActivity extends ARActivity implements SeekBar.OnSeekBarChang
     private void setProgressText(){
         TextView tv = findViewById(R.id.progressText);
         tv.setText((this.seekBar.getProgress()+1)+"");
+    }
+
+    public void onButtonRestartNorthInitClicked(View element){
+        this.arBuilding.stopPositioning();
+        this.arBuilding = null;
+        Log.i("Debug", "The Activity should now start");
+        Intent startARActivityIntent = new Intent(this, NorthInitializer.class);
+        startARActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        this.startActivity(startARActivityIntent);
+        ActivityCompat.finishAffinity(this);
     }
 }
 
