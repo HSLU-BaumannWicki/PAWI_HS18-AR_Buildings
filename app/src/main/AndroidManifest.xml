@@ -18,16 +18,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:screenOrientation="portrait"
             android:name=".ARMainActivity"
             android:allowTaskReparenting="true"></activity>
-        <activity android:name=".CheckPermissionMainActivity">
+        <activity android:name=".CheckPermissionMainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NorthInitializer"></activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".NorthInitializer"></activity>
     </application>
 
 </manifest>

@@ -58,7 +58,6 @@ public class CheckPermissionMainActivity extends AppCompatActivity {
             this.myPermissionsList.put(systemPermissionIdentifier, checkboxID);
         } else {
             this.setCheckedForCheckboxID(checkboxID);
-            Log.d("Debug", "Permission " + systemPermissionIdentifier + " should already be granted");
         }
     }
 

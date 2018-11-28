@@ -1,8 +1,11 @@
 package eu.kudan.ar;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
@@ -44,7 +47,23 @@ public class ARMainActivity extends ARActivity implements SeekBar.OnSeekBarChang
     @Override
     public void onResume(){
         super.onResume();
-        this.arBuilding.startPositioning();
+        if(this.doIHaveCameraAndLocationPermission()) {
+            this.arBuilding.startPositioning();
+        } else{
+            this.startPermissionRequestActivity();
+        }
+    }
+
+    private void startPermissionRequestActivity() {
+        Intent startARActivityIntent = new Intent(this, CheckPermissionMainActivity.class);
+        startARActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        this.startActivity(startARActivityIntent);
+        ActivityCompat.finishAffinity(this);
+    }
+
+    private boolean doIHaveCameraAndLocationPermission() {
+        return (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED);
     }
 
     @Override
