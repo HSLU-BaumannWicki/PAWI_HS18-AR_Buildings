@@ -8,9 +8,9 @@ import commonlib.model.texture.Texturizer;
 import eu.kudan.kudan.ARModelNode;
 
 public class BuildingModelSampleImpl implements BuildingModel {
-    private final static double ALTITUDE = 450;
-    private final static double LATITUDE = 47.143213;
-    private final static double LONGITUDE = 8.432914;
+    private final static double ALTITUDE = 428;
+    private final static double LATITUDE = 47.14332;
+    private final static double LONGITUDE = 8.4329;
     private Location locationOfTheBuilding;
     private ARModelNode myModel;
 
@@ -21,7 +21,7 @@ public class BuildingModelSampleImpl implements BuildingModel {
         this.locationOfTheBuilding.setAltitude(ALTITUDE);
         this.locationOfTheBuilding.setLongitude(LONGITUDE);
         this.locationOfTheBuilding.setLatitude(LATITUDE);
-        myModel.rotateByDegrees((80-120+(5*20)-10), 0,1,0 );
+        myModel.rotateByDegrees((450), 0,1,0 );
         this.hide();
     }
 

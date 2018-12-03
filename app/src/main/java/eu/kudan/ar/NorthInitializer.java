@@ -18,6 +18,7 @@ import commonlib.storage.MeanRingBuffer;
 public class NorthInitializer extends AppCompatActivity implements SensorEventListener {
     private final static float MINIMAL_ANGLE_RAD = -0.01f;
     private final static float MAXIMAL_ANGLE_RAD = 0.01f;
+    private final static int MIN_TIMES_IN_RANGE = 20;
 
     private final static int MAGNET_SENSOR_ID = 0b1;
     private final static int ACCELERATOR_SENSOR_ID = 0b10;
@@ -25,6 +26,7 @@ public class NorthInitializer extends AppCompatActivity implements SensorEventLi
     private float[] lastMagnetometer = new float[3];
     private SensorManager sensorManager;
     private int state;
+    private int timesSensorDateInRange = 0;
     private MeanRingBuffer<Float> angleMeanBuffer = new FloatMeanRingBuffer(10);
 
     private Sensor magneticSensor;
@@ -69,8 +71,11 @@ public class NorthInitializer extends AppCompatActivity implements SensorEventLi
             this.imageView.setRotation((float)Math.toDegrees(mean));
             if(isInLegalNorthAngle(mean)){
                 ((ImageView)findViewById(R.id.northpositionerindicator)).setImageResource(R.drawable.northpositionersuccessfull);
-                this.startNextState();
+                if(this.timesSensorDateInRange++>=MIN_TIMES_IN_RANGE) {
+                    this.startNextState();
+                }
             }else{
+                this.timesSensorDateInRange = 0;
                 ((ImageView)findViewById(R.id.northpositionerindicator)).setImageResource(R.drawable.northpositioner);
             }
         }

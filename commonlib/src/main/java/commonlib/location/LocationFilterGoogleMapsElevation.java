@@ -17,7 +17,11 @@ public class LocationFilterGoogleMapsElevation implements LocationFilterElevatio
     private final String GOOGLE_MAPS_ELEVATION_REQUEST_URL = "https://maps.googleapis.com/maps/api/elevation/json?locations=";
 
     public LocationFilterGoogleMapsElevation() {
-        this.API_KEY = "";
+        this("");
+    }
+
+    public LocationFilterGoogleMapsElevation(String api_key){
+        this.API_KEY = api_key;
     }
 
     /**
