@@ -66,7 +66,6 @@ public class NorthInitializer extends AppCompatActivity implements SensorEventLi
             float[] orientationAngles = new float[3];
             SensorManager.getRotationMatrix(mR, null, lastAccelerometer, lastMagnetometer);
             SensorManager.getOrientation(mR, orientationAngles);
-            System.out.println("Calculated:   " + this.northAngleCalculator.calculateNorthAngleBasedOnData());
             float mean = this.angleMeanBuffer.getNewMean(orientationAngles[0]*-1);
             this.imageView.setRotation((float)Math.toDegrees(mean));
             if(isInLegalNorthAngle(mean)){

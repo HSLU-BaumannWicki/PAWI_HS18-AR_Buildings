@@ -22,10 +22,9 @@ public class ARMainActivity extends ARActivity implements SeekBar.OnSeekBarChang
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.arBuilding = ProjectInitializer.initGPSSingleBuildingSolution(this);
+        this.arBuilding = ProjectInitializer.initGPSSingleBuildingSolution(this, findViewById(R.id.textView2));
 
         // Comment this out for the time being unless you plan to create UI elements
-        setContentView(R.layout.ar_main_activity);
         this.seekBar = findViewById(R.id.seekBar2);
         this.seekBar.setOnSeekBarChangeListener(this);
         this.setProgressText();

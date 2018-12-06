@@ -5,6 +5,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.widget.TextView;
 
 import com.jme3.math.Vector3f;
 
@@ -34,9 +35,8 @@ import eu.kudan.kudan.ARTexture2D;
 public class ProjectInitializer {
 
     @NonNull
-    public static ARBuildingsPositioner initGPSSingleBuildingSolution(Context context){
+    public static ARBuildingsPositioner initGPSSingleBuildingSolution(Context context, TextView overlayDebugMethod){
         KudanDevAPIKey();
-
         ARGyroManager gyroManager = ARGyroManager.getInstance();
         gyroManager.initialise();
         ARModelImporter importer = new ARModelImporter();
@@ -71,6 +71,8 @@ public class ProjectInitializer {
 
         GPSBuildingPositioner gpsPositioner = new GPSBuildingPositioner(locationFilter,
                 physicalNorthInitializer, locationDistanceCalculator, buildingModel);
+        gpsPositioner.setOverlayTextView(overlayDebugMethod);
+        System.out.println(overlayDebugMethod);
         return new ARBuildingsPositioner(gpsPositioner);
     }
 

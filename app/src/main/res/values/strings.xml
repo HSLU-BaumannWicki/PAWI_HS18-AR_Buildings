@@ -9,4 +9,5 @@
     <string name="request_permission_again_button">Request Again</string>
     <string name="no_location_found">No location found till now</string>
     <string name="restart_north_init">Reinitialize north</string>
+    <string name="nolocationfound">No location found till now</string>
 </resources>

@@ -2,8 +2,6 @@ package commonlib.location;
 
 import android.hardware.SensorManager;
 
-import java.util.Arrays;
-
 public class NorthAngleCalculator {
     private final static int MAGNET_SENSOR_ID = 0b1;
     private final static int ACCELERATOR_SENSOR_ID = 0b10;
@@ -12,12 +10,6 @@ public class NorthAngleCalculator {
     private int state;
 
     public float calculateNorthAngleBasedOnData(){
-        System.out.println("STATE:    " + this.state);
-        System.out.print("lastAccel   ");
-        Arrays.asList(this.lastAccelerometer).forEach(System.out::print);
-        System.out.println("");
-        System.out.println("lastMag" + this.lastMagnetometer);
-        Arrays.asList(this.lastMagnetometer).forEach(System.out::print);
         this.state &= ~(MAGNET_SENSOR_ID | ACCELERATOR_SENSOR_ID);
         float[] mR = new float[9];
         float[] orientationAngles = new float[3];
