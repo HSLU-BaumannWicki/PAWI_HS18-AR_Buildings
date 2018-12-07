@@ -1,7 +1,7 @@
 package commonlib.location;
 
 public class LocationFilterElevationFactory {
-    private static final String GOOGLE_API_KEY = "AIzaSyDOqv8SKsh9_tXfxOp0aYXsYFYxkZpWN_Q";
+    private static final String GOOGLE_API_KEY = "";
 
     public LocationFilterElevation getLocationFilterElevationImpl(){
         return this.getGoogleElevation();
