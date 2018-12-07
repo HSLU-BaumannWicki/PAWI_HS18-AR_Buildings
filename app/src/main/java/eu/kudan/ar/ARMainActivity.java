@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import eu.kudan.ar.ar.ARBuildingsPositioner;
 import eu.kudan.ar.di.ProjectInitializer;
@@ -22,6 +21,7 @@ public class ARMainActivity extends ARActivity implements SeekBar.OnSeekBarChang
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.ar_main_activity);
         this.arBuilding = ProjectInitializer.initGPSSingleBuildingSolution(this, findViewById(R.id.textView2));
 
         // Comment this out for the time being unless you plan to create UI elements
@@ -97,8 +97,8 @@ public class ARMainActivity extends ARActivity implements SeekBar.OnSeekBarChang
     }
 
     private void setProgressText(){
-        TextView tv = findViewById(R.id.progressText);
-        tv.setText((this.seekBar.getProgress()+1)+"");
+        //TextView tv = findViewById(R.id.progressText);
+        //tv.setText((this.seekBar.getProgress()+1)+"");
     }
 
     public void onButtonRestartNorthInitClicked(View element){
